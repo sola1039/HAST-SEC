@@ -71,7 +71,7 @@ npm run setup
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/setup.ps1 -Cuda
 ```
 
-安装脚本会取得固定版本的语言权重、推理运行库和公开示例角色, 并校验文件. CPU与显卡方式无需同时安装. 安装完成后启动:
+安装脚本会取得固定版本的语言权重、推理运行库和公开示例角色, 并校验文件. 下载中断后重新运行会从断点续传, 连不上 Hugging Face 时会自动改用镜像源. CPU与显卡方式无需同时安装. 安装完成后启动:
 
 ```powershell
 npm start

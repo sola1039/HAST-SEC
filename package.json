@@ -7,9 +7,11 @@
   "engines": {"node": ">=22"},
   "scripts": {
     "start": "node service/start.mjs",
+    "dev": "node tools/dev.mjs",
     "setup": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/setup.ps1",
     "check": "node tools/check.mjs",
-    "avatar": "node tools/import_avatar.mjs"
+    "avatar": "node tools/import_avatar.mjs",
+    "rehash": "node tools/rehash.mjs"
   },
   "dependencies": {"@pixiv/three-vrm": "3.5.5", "three": "0.180.0"}
 }

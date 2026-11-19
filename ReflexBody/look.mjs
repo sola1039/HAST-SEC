@@ -1,12 +1,14 @@
-// The showcase's look: a matte porcelain mannequin in soft room light, a clean floor with a soft shadow that follows the feet.
+// The showcase's look: a dressed figure (skin, top, trousers, shoes) in soft room light on a warm wooden floor, with a soft shadow
+// that follows the feet.
 import * as T from 'three';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 
 const FLOOR_SIZE=12;  // the floor plane the body view makes (its grid is hidden)
-// one porcelain family: the trunk a little warmer, the hands and feet a little deeper
-const TONES=[[/^head|^neck/,0xe8cdb8],[/^thorax|^abdomen|^pelvis|^clavicle/,0xe2c3ab],[/^hand|^foot|^toes/,0xd2ae95]];
-const LIMB=0xdfc1aa;
-const tone=name=>(TONES.find(([re])=>re.test(name))?.[1])??LIMB;
+// an outfit, so she reads as a person against the floor: skin on the head, neck, forearms and hands, a blue top with sleeves to the
+// elbows, navy trousers, dark shoes
+const SKIN=0xf0c8ad;
+const OUTFIT=[[/^head|^neck|^forearm|^hand/,SKIN],[/^thorax|^abdomen|^clavicle|^upperarm/,0x5b8fd0],[/^pelvis|^thigh|^shank/,0x3f4d6b],[/^foot|^toes/,0x2e2a2b]];
+const tone=name=>(OUTFIT.find(([re])=>re.test(name))?.[1])??SKIN;
 
 // a round shadow: dark in the middle, gone at the edge
 function shadowTexture(){
@@ -21,11 +23,12 @@ export function applyLook({scene,renderer,view}){
  scene.environment=pmrem.fromScene(new RoomEnvironment(),.04).texture;scene.environmentIntensity=.32;pmrem.dispose();
  scene.traverse(o=>{
   if(o.isGridHelper)o.visible=false;
-  else if(o.isMesh&&o.geometry?.parameters?.width===FLOOR_SIZE)o.material=new T.MeshStandardMaterial({color:0xe8dacb,roughness:1,metalness:0});
+  else if(o.isMesh&&o.geometry?.parameters?.width===FLOOR_SIZE)o.material=new T.MeshStandardMaterial({color:0xd6c1a8,roughness:.9,metalness:0});
  });
  for(const m of view.meshes){
   if(m.userData.body===0)continue;
-  m.material=new T.MeshPhysicalMaterial({color:tone(m.userData.name),roughness:.52,metalness:0,clearcoat:.3,clearcoatRoughness:.55,sheen:.35,sheenRoughness:.6,sheenColor:new T.Color(0xfff2e8)});
+  const c=tone(m.userData.name),skin=c===SKIN;  // skin a little glossy, cloth matte with a soft sheen
+  m.material=new T.MeshPhysicalMaterial({color:c,roughness:skin?.5:.75,metalness:0,clearcoat:skin?.2:0,clearcoatRoughness:.6,sheen:skin?.2:.6,sheenRoughness:.7,sheenColor:new T.Color(skin?0xffe9dc:0xffffff)});
   m.userData.base=m.material.color.clone();
  }
  const blob=new T.Mesh(new T.PlaneGeometry(.85,.85),new T.MeshBasicMaterial({map:shadowTexture(),transparent:true,depthWrite:false}));

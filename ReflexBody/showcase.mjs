@@ -89,7 +89,7 @@ async function start(){
  const sim=createSim(mj,arenaXml(xml),DT),{model,data}=sim,floor=model.geom('floor').id;
  model.geom_priority[floor]=1;model.geom_friction[floor*3]=.5;
  const {scene,camera,renderer,controls,follow}=createArenaScene(stage);
- const view=createBodyView(scene,sim,meta),arena=createArena(scene),look=applyLook({scene,renderer,view});
+ const view=createBodyView(scene,sim,meta),arena=createArena(scene),look=applyLook({scene,renderer,view,sim});
  view.meshes.filter(m=>m.userData.body===0).forEach(m=>{m.visible=false;});
  const bodyMeshes=view.meshes.filter(m=>m.userData.body!==0);
  const pickBody=ray=>{const h=ray.intersectObjects(bodyMeshes,false)[0];return h&&{body:h.object.userData.body,point:h.point};};
@@ -133,6 +133,7 @@ async function start(){
    const pack=await withCountedFetch(n=>{got+=n;show('正在下载动作库',got);},()=>loadTracker('./model/tracker/'));
    phase='启动控制器';tracker=new Tracker(mj,model,data,pack,idle.ctrl);
    nextControl=data.time;status.hidden=true;reset.disabled=false;app.classList.add('is-ready');$('skill').textContent='ReflexBody Lite';$('splash').classList.add('is-gone');
+   const notice=$('notice');notice.hidden=false;$('noticeOk').focus();$('noticeOk').onclick=()=>{notice.hidden=true;showHint('按住身体任意部位拖动');};
    showHint('按住身体任意部位拖动');resume();
   }catch(error){fail(error);}
  }

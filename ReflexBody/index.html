@@ -7,6 +7,7 @@
 <title>ReflexBody Lite 展台</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="./showcase.css">
+<link rel="stylesheet" href="./lite.css">
 <style>.notice{max-width:58%;margin:0;padding:7px 11px;border-radius:14px;font-size:11px;line-height:1.45;color:var(--ink-soft,#6d5d56)}</style>
 <script type="importmap">
 {"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/","@mujoco/mujoco":"./vendor/mujoco/mujoco.js"}}
@@ -17,6 +18,16 @@
   <div id="stage" aria-label="拖动数字人"></div>
   <svg id="tether" aria-hidden="true"><line x1="0" y1="0" x2="0" y2="0"/><circle r="5"/></svg>
   <div id="ripple" aria-hidden="true"></div>
+  <span id="force" aria-hidden="true"></span>
+  <section id="splash" aria-live="polite">
+    <div class="mark" aria-hidden="true"></div>
+    <h1>ReflexBody Lite</h1>
+    <p class="sub">可以拉动的物理数字人</p>
+    <div class="bar" aria-hidden="true"><i></i></div>
+    <p class="what" id="splashText">正在准备</p>
+    <button type="button" id="retry">重试</button>
+    <p class="fine">首次载入约 50 MB, 之后浏览器会缓存. 非商业研究版.</p>
+  </section>
 
   <header class="topbar">
     

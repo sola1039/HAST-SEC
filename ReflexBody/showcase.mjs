@@ -7,6 +7,8 @@ import {createSim} from './runtime/sim.mjs';
 import {arenaXml,createArena} from './runtime/arena.mjs';
 import {createBodyView} from './runtime/render.mjs';
 import {loadTracker,Tracker} from './runtime/tracker.mjs';
+import {mb,manifest,fetchBytes,withCountedFetch} from './loading.mjs';
+import {applyLook,createTether} from './look.mjs';
 
 const $=id=>document.getElementById(id);
 const handset=matchMedia('(max-width: 600px)').matches;
@@ -62,17 +64,37 @@ function createPull({canvas,camera,pick,sim,enabled,ui}){
  return {grab:()=>g,cancel:()=>up()};
 }
 
+// the bottom status line: what is loading now; a failure says where and why and reloads on a tap
+let phase='准备页面';
+// the opening screen: what is loading and how far (share of all the bytes); it fades once she can be pulled
+function say(text,share){$('splashText').textContent=text;if(share!==undefined)$('splash').style.setProperty('--p',`${Math.round(100*Math.min(1,share))}%`);}
+function fail(error){
+ console.error(error);const msg=`加载失败(${phase}): ${error?.message??error}`,splash=$('splash');
+ if(!splash.classList.contains('is-gone')){splash.classList.add('is-failed');say(msg);$('retry').onclick=()=>location.reload();return;}
+ const s=$('status');s.textContent=msg+'. 点这里重试';s.disabled=false;s.hidden=false;s.onclick=()=>location.reload();
+}
+addEventListener('error',e=>fail(e.error??e.message));
+addEventListener('unhandledrejection',e=>fail(e.reason));
+
 async function start(){
  const stage=$('stage'),app=$('app'),reset=$('reset'),status=$('status'),ripple=$('ripple'),hint=$('hint'),latency=$('latency'),memory=$('memory');
- const [mj,xml,idle,meta]=await Promise.all([loadMujoco(),resource('./model/body_torque.xml','text'),resource('./model/idle_stand.json','json'),resource('./model/body.meta.json','json')]);
+ const sizes=await manifest(),total=k=>sizes?.[k]??0;
+ phase='下载物理引擎';let got=0;const engine=total('vendor/mujoco/mujoco.wasm');
+ const lib=Object.entries(sizes??{}).filter(([k])=>k.startsWith('model/tracker/')).reduce((a,[,v])=>a+v,0),all=engine+lib;
+ const show=(what,n)=>say(`${what} ${mb(n)}${all?` / ${mb(all)}`:''} MB`,all?n/all:undefined);
+ show('正在下载物理引擎',0);
+ const wasmBinary=await fetchBytes('./vendor/mujoco/mujoco.wasm',n=>{got+=n;show('正在下载物理引擎',got);});
+ phase='初始化物理';say('正在初始化物理');
+ const [mj,xml,idle,meta]=await Promise.all([loadMujoco({wasmBinary}),resource('./model/body_torque.xml','text'),resource('./model/idle_stand.json','json'),resource('./model/body.meta.json','json')]);
  const sim=createSim(mj,arenaXml(xml),DT),{model,data}=sim,floor=model.geom('floor').id;
  model.geom_priority[floor]=1;model.geom_friction[floor*3]=.5;
  const {scene,camera,renderer,controls,follow}=createArenaScene(stage);
- const view=createBodyView(scene,sim,meta),arena=createArena(scene);
+ const view=createBodyView(scene,sim,meta),arena=createArena(scene),look=applyLook({scene,renderer,view});
  view.meshes.filter(m=>m.userData.body===0).forEach(m=>{m.visible=false;});
  const bodyMeshes=view.meshes.filter(m=>m.userData.body!==0);
  const pickBody=ray=>{const h=ray.intersectObjects(bodyMeshes,false)[0];return h&&{body:h.object.userData.body,point:h.point};};
  let tracker=null,nextControl=0,spring=null,hintTimer=0,falls=0;
+ const tether=createTether({tether:$('tether'),label:$('force'),camera,canvas:renderer.domElement});
  function showHint(text,ms=3200){hint.textContent=text;hint.classList.add('is-on');clearTimeout(hintTimer);if(ms)hintTimer=setTimeout(()=>hint.classList.remove('is-on'),ms);}
  // the left rail: pull only; the other hands are locked in this release
  for(const b of document.querySelectorAll('.tools button'))b.addEventListener('click',()=>showHint(b.dataset.mode==='pull'?'按住身体任意部位拖动':LOCKED));
@@ -88,7 +110,7 @@ async function start(){
   tracker?.reset();nextControl=data.time;spring=null;view.update(0);follow(data.qpos[0],data.qpos[2],0);
  }
  restore();renderer.render(scene,camera);app.classList.add('is-visible');
- status.textContent='动作库正在加载';status.disabled=true;status.hidden=false;reset.disabled=true;
+ phase='下载动作库';$('status').hidden=true;reset.disabled=true;
  reset.addEventListener('click',restore);
  // one physics step (5 ms): the controller every 20 ms, the finger's spring, the hidden helper, the physics
  function step(){
@@ -108,17 +130,19 @@ async function start(){
  }
  async function loadController(){
   try{
-   tracker=new Tracker(mj,model,data,await loadTracker('./model/tracker/'),idle.ctrl);
-   nextControl=data.time;status.hidden=true;reset.disabled=false;app.classList.add('is-ready');$('skill').textContent='ReflexBody Lite';
+   const pack=await withCountedFetch(n=>{got+=n;show('正在下载动作库',got);},()=>loadTracker('./model/tracker/'));
+   phase='启动控制器';tracker=new Tracker(mj,model,data,pack,idle.ctrl);
+   nextControl=data.time;status.hidden=true;reset.disabled=false;app.classList.add('is-ready');$('skill').textContent='ReflexBody Lite';$('splash').classList.add('is-gone');
    showHint('按住身体任意部位拖动');resume();
-  }catch(error){console.error(error);status.textContent='动作库加载失败, 点这里重试';status.disabled=false;status.hidden=false;status.onclick=()=>location.reload();}
+  }catch(error){fail(error);}
  }
  let last=performance.now(),frameHandle=0,simLag=0;
  function frame(now){
   frameHandle=0;if(document.hidden)return;
   const dt=Math.min(.04,(now-last)/1000);last=now;
   if(tracker){simLag+=dt;let n=0;while(simLag>=DT&&n<MAX_STEPS){step();simLag-=DT;n++;}if(n===MAX_STEPS)simLag=0;}
-  view.update(dt);arena.update(model,data);
+  view.update(dt);arena.update(model,data);look.update(data.qpos[0],data.qpos[1],data.qpos[2]);
+  const g=pull.grab();tether.draw(g&&spring?spring.point:null,[ripple.offsetLeft,ripple.offsetTop],spring?Math.hypot(...spring.force):0);
   if(!pull.grab())follow(data.qpos[0],data.qpos[2],dt);else controls.update();
   renderer.render(scene,camera);
   if(pendingAt!==null){const s=Math.max(0,performance.now()-pendingAt);estimate=estimate===null?s:estimate*.75+s*.25;pendingAt=null;}
@@ -133,4 +157,4 @@ async function start(){
  resume();void loadController();
 }
 
-start().catch(error=>{console.error(error);$('status').textContent='加载失败, 点这里重试';$('status').disabled=false;$('status').hidden=false;$('status').onclick=()=>location.reload();});
+start().catch(fail);

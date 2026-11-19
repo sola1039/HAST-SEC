@@ -5,6 +5,7 @@ import {createBodyView} from './runtime/render.mjs';
 import {createScene} from './runtime/scene.mjs';
 import {arenaXml,createArena} from './runtime/arena.mjs';
 import {loadTracker,Tracker} from './runtime/tracker.mjs';
+import {mb,manifest,fetchBytes,withCountedFetch} from './loading.mjs';
 
 const $=id=>document.getElementById(id);
 const DT=.005,CTRL_HZ=50,STIFF=250,DAMP=20,F_MAX=200,MAX_STEPS=20,FALL_Y=.35;
@@ -13,12 +14,17 @@ async function start(){
  const {scene,camera,renderer,controls}=createScene($('stage'));
  camera.position.set(1.6,1.1,2.2);controls.target.set(0,.6,0);
  const get=(u,k)=>fetch(u).then(r=>{if(!r.ok)throw Error('读取失败: '+u);return r[k]();});
- const [mj,xml,meta,idle]=await Promise.all([loadMujoco(),get('./model/body_torque.xml','text'),get('./model/body.meta.json','json'),get('./model/idle_stand.json','json')]);
+ const say=t=>{$('loading').textContent=t;},sizes=await manifest();let got=0;
+ const engine=sizes?.['vendor/mujoco/mujoco.wasm']??0,lib=Object.entries(sizes??{}).filter(([k])=>k.startsWith('model/tracker/')).reduce((a,[,v])=>a+v,0);
+ const wasmBinary=await fetchBytes('./vendor/mujoco/mujoco.wasm',n=>{got+=n;say(`正在下载物理引擎 ${mb(got)}${engine?` / ${mb(engine)}`:''} MB`);});
+ say('正在初始化物理');
+ const [mj,xml,meta,idle]=await Promise.all([loadMujoco({wasmBinary}),get('./model/body_torque.xml','text'),get('./model/body.meta.json','json'),get('./model/idle_stand.json','json')]);
  const model=mj.MjModel.from_xml_string(arenaXml(xml));model.opt.timestep=DT;
  const data=new mj.MjData(model),floor=model.geom('floor').id;
  model.geom_priority[floor]=1;
  const surface=()=>{model.geom_friction[3*floor]=+$('surface').value;};surface();$('surface').onchange=surface;
- const tracker=new Tracker(mj,model,data,await loadTracker('./model/tracker/'),idle.ctrl);
+ got=0;const pack=await withCountedFetch(n=>{got+=n;say(`正在下载动作库 ${mb(got)}${lib?` / ${mb(lib)}`:''} MB`);},()=>loadTracker('./model/tracker/'));
+ const tracker=new Tracker(mj,model,data,pack,idle.ctrl);
  const reset=()=>{const t=data.time;data.qpos.set(idle.qpos);data.qvel.fill(0);data.ctrl.set(idle.ctrl);data.time=t;mj.mj_forward(model,data);tracker.reset();};
  reset();$('reset').onclick=()=>{grab=null;reset();};
  const view=createBodyView(scene,{model,data,bodyName:i=>model.body(i).name},meta),arena=createArena(scene);

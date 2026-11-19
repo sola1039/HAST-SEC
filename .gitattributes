@@ -4,3 +4,5 @@ models/** -text
 *.vrm -text
 *.png -text
 *.gguf -text
+*.wasm -text
+*.bat text eol=crlf

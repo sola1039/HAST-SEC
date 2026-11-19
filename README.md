@@ -1,139 +1,113 @@
----
-license: other
-license_name: hast-sec-noncommercial-0.1
-license_link: LICENSE
-language:
-  - zh
-tags:
-  - motion-control
-  - vrm
-  - text-to-motion
-  - research
----
-
-# HAST-SEC v0.1
+# 流明 Lumen · 虚拟角色研究公开版
 
 各位路过的朋友们、未来的博士、院士、社会精英们点个star吧，球球了！
 
-混合自适应语义时序骨骼控制与估计系统. 面向非商业学习和研究的本地交互演示, 支持中文聊天、已支持动作的语义控制、连续角色运动和实时曲线观察.
+武汉光影流明科技有限公司的虚拟具身智能研究公开版本. 我们想做一个能听懂话、动作自然、被触碰时会像真人一样反应的虚拟角色.
+这个仓库按版本存放已经公开的部分, 每个版本在自己的文件夹里, 有独立的说明、运行方式和许可.
 
-系统使用约0.8B的文本模型及小型运动模型. 本版只提供运行所需代码和资源, 不包含训练流程或原始训练视频.
+![流明项目宣传图](v0.1/docs/images/lumen-world.webp)
 
-本公开版为早期研究版本, 尚未完成完整的强化学习训练与应用适配, 不代表流明项目正式版的完整能力. 使用者需根据自身需求进一步学习、训练、适配和验证, 不应直接视为成熟产品. 我们将持续迭代流明项目正式版及HAST-SEC架构.
+## 版本一览
 
-## 关于公司与合作
+| 版本 | 一句话 | 运行环境 | 文件夹 |
+|---|---|---|---|
+| **ReflexBody Lite v0.1** | 浏览器里的物理数字人, 按住身体任意部位拉动, 她在物理仿真中自己保持平衡 | 任意现代浏览器, 手机可用, 纯静态网页 | [ReflexBody/](ReflexBody/) |
+| **HAST-SEC v0.1** | 中文聊天驱动的角色动作控制, 运动学层: 自然待机、行走与局部动作 | Windows + Node.js 22, 本地中文小模型 | [v0.1/](v0.1/) |
 
-武汉光影流明科技有限公司专注虚拟具身智能、角色智能与互动内容研发, 探索语言理解、身体表现和互动叙事之间的连接, 面向创作者研究虚拟角色与互动世界.
+**在线体验 ReflexBody Lite**: https://sola1039.github.io/HAST-SEC/ReflexBody/ (电脑和手机都可以直接打开)
 
-我们正在寻求技术共研、应用落地、内容合作与商业授权合作, 同时寻求融资支持. 欢迎产业伙伴、研究团队及投资机构与我们交流.
+---
 
-公司官网: [武汉光影流明科技有限公司](https://47.113.224.57/company/)
+## ReflexBody Lite v0.1: 可以拉动的物理数字人
 
-合作与融资联系: [zhouzihuai@las-lumen.cn](mailto:zhouzihuai@las-lumen.cn)
+![ReflexBody Lite 展台](docs/images/reflexbody-lite.png)
 
-![流明项目宣传图](docs/images/lumen-world.webp)
+角色的身体是一个真实的物理模型: 21 个体段、44 个关节伺服、45 千克, 在 MuJoCo 物理引擎里以 5 毫秒一步运行.
+你拉她的手、腰或头, 力直接作用在身体上; 她每 20 毫秒调整一次全身关节, 顶住、挪步或顺着拉力, 尽量不倒.
+整个过程在浏览器本地实时运行, 不需要显卡和服务器算力.
 
-## 本版能做什么
+**快速开始**
 
-- 通过中文聊天和已支持的动作指令与角色交互.
-- 展示连续运动、局部动作控制、表情和自动翻页气泡.
-- 查看最近15秒的运动曲线、姿态指标与实际资源占用.
-- 在本机运行, 导入自己合法取得的兼容VRM角色.
+- 在线: 打开上面的链接.
+- 本地: 克隆仓库后进入 `ReflexBody/`, Windows 双击 `start.bat`; 其他系统运行 `node serve.mjs`, 打开 http://127.0.0.1:8860/ (需要 Node.js 18+).
+- 手机: `node serve.mjs --lan`, 手机连同一 Wi-Fi 打开命令行打印的地址.
+- 部署到自己的网站: 整个文件夹是静态网页, 放到 GitHub Pages、Netlify、对象存储等任何静态托管即可. 详见 [ReflexBody/README.md](ReflexBody/README.md).
 
-本版不附完整训练工具链, 也不保证任意中文指令都能生成正确动作. 学习研究时可以修改运行代码与资源, 进一步训练需自行准备经过审核的数据和训练流程.
+**本版边界**
 
-## 安装与启动
+- 只支持"拉动". 展台左侧的戳、掐、摸是锁定的.
+- 只包含站立受力反应, 不包含被牵着走、摔倒后起身.
+- 模型是早期精简版, 不是正式版能力.
 
-推荐Windows 10或11、Node.js 22以上和支持WebGL的现代浏览器. 初次安装需要网络和约2GB可用磁盘空间; 显卡加速安装需要更多空间. CPU可运行, 实际响应时间与硬件有关.
+---
 
-先从[版本页面](https://github.com/sola1039/HAST-SEC/releases)下载源码包并解压, 或克隆仓库:
+## HAST-SEC v0.1: 中文控制的角色动作
+
+混合自适应语义时序骨骼控制与估计系统. 在本机用约 0.8B 的中文小模型理解聊天与指令, 驱动 VRM 角色的连续运动、局部动作和表情, 并实时显示运动曲线与资源占用.
+
+**快速开始** (Windows 10/11, Node.js 22+):
 
 ```powershell
 git clone https://github.com/sola1039/HAST-SEC.git
-cd HAST-SEC
-```
-
-下载压缩包的用户, 在解压后包含package.json的目录打开终端. 先安装程序依赖:
-
-```powershell
+cd HAST-SEC/v0.1
 npm ci
+npm run setup      # 没有 NVIDIA 显卡; 有显卡用: powershell -NoProfile -ExecutionPolicy Bypass -File tools/setup.ps1 -Cuda
+npm start          # 打开 http://127.0.0.1:8769/language-lab
 ```
 
-然后选择一种运行资源安装方式. 没有兼容NVIDIA显卡时使用CPU方式:
+完整说明、角色导入与常见问题见 [v0.1/README.md](v0.1/README.md).
 
-```powershell
-npm run setup
+---
+
+## 少量数据, 小算力
+
+整套系统从约 11 分钟的动作素材出发, 训练只用了消费级显卡, 最终只需要浏览器就能运行. 方法细节将随论文发布.
+
+## 完整版能力(未开源)
+
+正式版在此基础上还有:
+
+- 戳、掐、抚摸等触碰, 皮肤感受(触觉、快痛、慢痛), 受刺激后的反射回缩与惊跳, 转头看向被碰的地方;
+- 在转头、反射内力和高频连续刺激下仍保持站立;
+- 按好感度顺从或抵抗, 被牵着走;
+- 摔倒后起身, 行走, 与语言模型和表情联动.
+
+这些交互需要更多的反射层与对应训练的模型, 并涉及第三方素材与角色版权, 因为版权等原因没法开源. 有合作意向欢迎联系.
+
+## 仓库结构
+
 ```
-
-有兼容NVIDIA显卡及可用驱动时, 推荐使用显卡加速方式:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/setup.ps1 -Cuda
+HAST-SEC/
+├── README.md        本文件
+├── docs/images/     首页图片
+├── ReflexBody/      ReflexBody Lite v0.1(纯静态网页, 可直接部署)
+└── v0.1/            HAST-SEC v0.1(Node.js 本地服务)
 ```
-
-安装脚本会取得固定版本的语言权重、推理运行库和公开示例角色, 并校验文件. CPU与显卡方式无需同时安装. 安装完成后启动:
-
-```powershell
-npm start
-```
-
-打开 [http://127.0.0.1:8769/language-lab](http://127.0.0.1:8769/language-lab), 或使用终端打印的地址. 后续使用通常只需在同一目录执行npm start, 不必重复安装.
-
-## 页面操作
-
-页面默认暂停. 点击"开始或继续"后观察角色, 在底部聊天框输入消息并发送. 点击"暂停"停止回放并释放本程序启动的语言推理进程; "重置并暂停"回到初始状态. 终端中按Ctrl+C退出服务.
-
-首次开始或聚焦聊天框时会加载和预热语言模型, 首条消息可能较慢. CPU响应通常明显慢于显卡加速. 输入一条指令后, 等待理解与动作结束再继续, 便于区分当前动作与下一条指令.
-
-| 用途 | 可尝试的消息 |
-|---|---|
-| 日常聊天 | 你好、你今天怎么样、讲一个简短的故事 |
-| 手臂动作 | 挥挥左手、把右手举高 |
-| 腿部动作 | 抬起右腿 |
-
-实时图表只保留最近15秒. 资源仪表显示内存和文件占用, 不是显存仪表. 暂停、首次加载、角色不同及硬件不同都可能影响显示结果.
-
-## 角色与使用
-
-默认使用pixiv公开示例角色, 许可和出处见THIRD_PARTY_NOTICES.txt. 视频中的角色文件不随本项目分发. 可用合法取得的兼容VRM角色导入本机:
-
-```powershell
-npm run avatar -- "D:\角色\自己的角色.vrm"
-```
-
-角色文件应在100MB以内, 包含完整人形、眼睛和手指骨骼. 导入后刷新页面; 只替换本机角色, 自有角色不会加入发布清单. 表情按角色实际支持的通道显示, 不同角色的形态和动作幅度可能不同.
-
-## 检查与常见问题
-
-安装后可检查源码语法、本地依赖路径与配套运动资源:
-
-```powershell
-npm run check
-```
-
-| 现象 | 处理方式 |
-|---|---|
-| 找不到node或npm | 安装Node.js 22以上, 重新打开终端 |
-| PowerShell阻止npm脚本 | 使用npm.cmd ci、npm.cmd run setup和npm.cmd start |
-| 下载中断或校验失败 | 检查网络后重新执行安装命令, 已校验资源会跳过; 官方下载地址与目标位置见assets/resources.json |
-| 页面无法连接 | 保持启动终端打开, 查看启动报错及实际地址 |
-| 8769端口已占用 | 关闭自己之前启动的同一服务, 或在启动前设置$env:PORT='8779' |
-| 中文推理端口已占用 | 启动前设置$env:HAST_LLM_PORT='8784', 再执行npm start |
-| 中文回复很慢 | 等待首次加载完成, 核对是否使用CPU方式; 兼容NVIDIA显卡可改用-Cuda安装方式 |
-| 角色加载失败或动作变形 | 使用完整骨骼的兼容VRM, 核对角色许可与骨架; 任意角色的重定向效果不作保证 |
-
-## 文件与反馈
-
-web为展示页面, service为本地服务, models和configs为配套运行资源与配置, tools提供安装、角色导入和检查工具. 其余目录包含骨骼、手部、表情及运行时处理代码; training目录中的文件是本版运行依赖, 不代表附带完整训练流程.
-
-不需要外部API密钥. 安装资源需要联网, 中文推理在本机完成. 本版提供源码和运行资源, 不包含原始训练视频、私人配置、完整历史实验和原演示角色. 不用于机器人实体控制或其他安全关键场景.
-
-问题请提交到[仓库议题](https://github.com/sola1039/HAST-SEC/issues), 附上系统、显卡、CPU或显卡运行方式、报错文字及复现步骤. 不要公开密码、访问令牌或无权分发的角色文件.
 
 ## 许可
 
-本版本为公开源码的非商业学习研究版. 允许非商业学习、教学和研究用途的使用、复制与修改; 非商业再分发应保留许可与来源声明, 标明修改, 并遵守非商业限制. 商业产品、收费服务及商业部署需事先联系维护者获得书面授权.
+两个版本都是**源码可见的非商业版本**, 不允许商业使用:
 
-完整条款: [项目许可证](LICENSE). 第三方资源独立遵守其原始许可: [第三方资源声明](THIRD_PARTY_NOTICES.txt). 项目授权不能替代第三方授权.
+- ReflexBody Lite: [ReflexBody/LICENSE](ReflexBody/LICENSE). 另外禁止修改后再分发网络权重与动作库, 禁止用它们训练或蒸馏其他模型.
+- HAST-SEC v0.1: [v0.1/LICENSE](v0.1/LICENSE).
+- 第三方软件与素材遵循各自许可, 见各文件夹的 `THIRD_PARTY_NOTICES.txt`.
 
-商用授权申请请通过[仓库议题](https://github.com/sola1039/HAST-SEC/issues)或上述公司联系邮箱沟通.
+商业授权、技术共研与合作请联系: [zhouzihuai@las-lumen.cn](mailto:zhouzihuai@las-lumen.cn). 问题反馈请提交 [Issues](https://github.com/sola1039/HAST-SEC/issues).
+
+## 关于我们
+
+武汉光影流明科技有限公司专注虚拟具身智能、角色智能与互动内容研发, 探索语言理解、身体表现和互动叙事之间的连接.
+我们正在寻求技术共研、应用落地、内容合作与商业授权合作, 同时寻求融资支持.
+
+公司官网: [武汉光影流明科技有限公司](https://47.113.224.57/company/) · 联系: [zhouzihuai@las-lumen.cn](mailto:zhouzihuai@las-lumen.cn)
+
+---
+
+## English summary
+
+Research releases of **Lumen**, an embodied virtual character by 武汉光影流明科技有限公司 (Wuhan, China).
+
+- **ReflexBody Lite v0.1** ([ReflexBody/](ReflexBody/), [live demo](https://sola1039.github.io/HAST-SEC/ReflexBody/)): a physics-based character in the browser that you can pull by any body part. MuJoCo compiled to WebAssembly steps the body every 5 ms and a controller keeps it standing. Runs on phones; no GPU or server needed. This release supports pulling only.
+- **HAST-SEC v0.1** ([v0.1/](v0.1/)): Chinese-language control of a VRM character's motion with a small local language model.
+
+The system starts from about eleven minutes of motion capture and was trained on consumer GPUs; details will follow with our paper. Both releases are source-available for **non-commercial use only**. Contact: zhouzihuai@las-lumen.cn

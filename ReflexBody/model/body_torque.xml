@@ -1,0 +1,194 @@
+<mujoco model="reflex-body">
+ <compiler angle="degree" autolimits="true" />
+ <option timestep="0.001" gravity="0 -9.81 0" integrator="implicitfast" cone="elliptic" impratio="10" />
+ <default>
+  <joint damping="0.6" armature="0.01" solreflimit="0.005 1" />
+  <default class="body"><geom contype="2" conaffinity="1" condim="3" /></default>
+  <default class="sole"><geom contype="2" conaffinity="1" condim="3" /></default>
+  <default class="pad"><geom contype="2" conaffinity="1" condim="3" solref="0.03 1" solimp="0.8 0.97 0.008" /></default>
+  <default class="mass"><geom contype="2" conaffinity="1" /></default>
+ </default>
+ <worldbody>
+  <geom name="floor" type="plane" size="10 10 0.1" quat="0.70710678 -0.70710678 0 0" rgba="0.92 0.9 0.86 1" friction="0.9 0.005 0.0001" />
+  <body name="pelvis" pos="0.00012 0.75853 -0.00152">
+   <freejoint name="root" />
+   <geom type="ellipsoid" pos="0 0.02 0.006" size="0.105 0.085 0.085" mass="5.6115" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+   <site name="skin_pelvis" type="ellipsoid" pos="0 0.02 0.006" size="0.113 0.093 0.093" rgba="0 0 0 0" />
+   <body name="abdomen" pos="0 0.0131 0">
+    <joint name="lumbar_flex" axis="1 0 0" range="-30 50" />
+    <joint name="lumbar_bend" axis="0 0 -1" range="-25 25" />
+    <joint name="lumbar_rot" axis="0 1 0" range="-30 30" />
+    <geom type="ellipsoid" pos="0 0.075 0.01" size="0.085 0.075 0.07" mass="6.5925" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+    <site name="skin_abdomen" type="ellipsoid" pos="0 0.075 0.01" size="0.093 0.083 0.078" rgba="0 0 0 0" />
+    <body name="thorax" pos="0 0.13408 0.00253">
+     <joint name="thoracic_flex" axis="1 0 0" range="-15 30" />
+     <joint name="thoracic_bend" axis="0 0 -1" range="-20 20" />
+     <joint name="thoracic_rot" axis="0 1 0" range="-25 25" />
+     <geom type="ellipsoid" pos="0 0.095 0.012" size="0.105 0.11 0.085" mass="6.5025" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+     <site name="skin_thorax" type="ellipsoid" pos="0 0.095 0.012" size="0.113 0.118 0.093" rgba="0 0 0 0" />
+     <body name="neck" pos="0 0.19459 -0.00418">
+      <joint name="neck_flex" axis="1 0 0" range="-35 50" />
+      <joint name="neck_bend" axis="0 0 -1" range="-25 25" />
+      <joint name="neck_rot" axis="0 1 0" range="-45 45" />
+      <geom type="capsule" fromto="0 0 0 0 0.06 0" size="0.038" mass="0.54" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+      <site name="skin_neck" type="capsule" fromto="0 0 0 0 0.06 0" size="0.046" rgba="0 0 0 0" />
+      <body name="head" pos="-0.00008 0.06273 0.00082">
+       <joint name="head_flex" axis="1 0 0" range="-25 25" />
+       <joint name="head_bend" axis="0 0 -1" range="-15 15" />
+       <joint name="head_rot" axis="0 1 0" range="-35 35" />
+       <geom type="ellipsoid" pos="0 0.07 0.016" size="0.074 0.084 0.07" mass="2.466" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+       <site name="skin_head" type="ellipsoid" pos="0 0.07 0.016" size="0.082 0.092 0.078" rgba="0 0 0 0" />
+       <site name="inner_ear" pos="0 0.075 0" size="0.005" rgba="0 0 0 0" />
+      </body>
+     </body>
+     <body name="clavicle_l" pos="0.05316 0.15927 -0.00394">
+      <joint name="sc_elev_l" axis="0 0 1" range="-25 30" />
+      <joint name="sc_prot_l" axis="0 -1 0" range="-15 20" />
+      <geom type="capsule" fromto="0 0 0 0.02928 0.00817 0.00015" size="0.034" mass="0.225" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+      <site name="skin_clavicle_l" type="capsule" fromto="0 0 0 0.02928 0.00817 0.00015" size="0.042" rgba="0 0 0 0" />
+      <body name="upperarm_l" pos="0.02928 0.00817 0.00015">
+       <joint name="shoulder_abd_l" axis="0 0 1" range="-95 120" />
+       <joint name="shoulder_flex_l" axis="0 -1 0" range="-60 165" />
+       <joint name="shoulder_rot_l" axis="1 0 0" range="-80 80" />
+       <geom type="capsule" fromto="0 0 0 0.20179 -0.00412 -0.00292" size="0.033" mass="1.1475" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+       <site name="skin_upperarm_l" type="capsule" fromto="0 0 0 0.20179 -0.00412 -0.00292" size="0.041" rgba="0 0 0 0" />
+       <body name="forearm_l" pos="0.20179 -0.00412 -0.00292">
+        <joint name="elbow_flex_l" axis="0 -1 0" range="0 145" />
+        <joint name="pronation_l" axis="1 0 0" range="-80 80" />
+        <geom type="capsule" fromto="0 0 0 0.16207 0.00081 0.0045" size="0.027" mass="0.621" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+        <site name="skin_forearm_l" type="capsule" fromto="0 0 0 0.16207 0.00081 0.0045" size="0.035" rgba="0 0 0 0" />
+        <body name="hand_l" pos="0.16207 0.00081 0.0045">
+         <joint name="wrist_flex_l" axis="0 0 -1" range="-70 80" />
+         <joint name="wrist_dev_l" axis="0 -1 0" range="-30 20" />
+         <geom type="capsule" fromto="0.01 0 0 0.1 0 0.002" size="0.022" mass="0.252" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+         <site name="skin_hand_l" type="capsule" fromto="0.01 0 0 0.1 0 0.002" size="0.03" rgba="0 0 0 0" />
+        </body>
+       </body>
+      </body>
+     </body>
+     <body name="clavicle_r" pos="-0.05362 0.15927 -0.00394">
+      <joint name="sc_elev_r" axis="0 0 -1" range="-25 30" />
+      <joint name="sc_prot_r" axis="0 1 0" range="-15 20" />
+      <geom type="capsule" fromto="0 0 0 -0.02928 0.00817 0.00015" size="0.034" mass="0.225" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+      <site name="skin_clavicle_r" type="capsule" fromto="0 0 0 -0.02928 0.00817 0.00015" size="0.042" rgba="0 0 0 0" />
+      <body name="upperarm_r" pos="-0.02928 0.00817 0.00015">
+       <joint name="shoulder_abd_r" axis="0 0 -1" range="-95 120" />
+       <joint name="shoulder_flex_r" axis="0 1 0" range="-60 165" />
+       <joint name="shoulder_rot_r" axis="1 0 0" range="-80 80" />
+       <geom type="capsule" fromto="0 0 0 -0.20179 -0.00412 -0.00292" size="0.033" mass="1.1475" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+       <site name="skin_upperarm_r" type="capsule" fromto="0 0 0 -0.20179 -0.00412 -0.00292" size="0.041" rgba="0 0 0 0" />
+       <body name="forearm_r" pos="-0.20179 -0.00412 -0.00292">
+        <joint name="elbow_flex_r" axis="0 1 0" range="0 145" />
+        <joint name="pronation_r" axis="1 0 0" range="-80 80" />
+        <geom type="capsule" fromto="0 0 0 -0.16207 0.00081 0.0045" size="0.027" mass="0.621" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+        <site name="skin_forearm_r" type="capsule" fromto="0 0 0 -0.16207 0.00081 0.0045" size="0.035" rgba="0 0 0 0" />
+        <body name="hand_r" pos="-0.16207 0.00081 0.0045">
+         <joint name="wrist_flex_r" axis="0 0 1" range="-70 80" />
+         <joint name="wrist_dev_r" axis="0 1 0" range="-30 20" />
+         <geom type="capsule" fromto="-0.01 0 0 -0.1 0 0.002" size="0.022" mass="0.252" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+         <site name="skin_hand_r" type="capsule" fromto="-0.01 0 0 -0.1 0 0.002" size="0.03" rgba="0 0 0 0" />
+        </body>
+       </body>
+      </body>
+     </body>
+    </body>
+   </body>
+   <body name="thigh_l" pos="0.06929 -0.03413 0.00529">
+    <joint name="hip_flex_l" axis="-1 0 0" range="-20 130" />
+    <joint name="hip_abd_l" axis="0 0 1" range="-25 45" />
+    <joint name="hip_rot_l" axis="0 -1 0" range="-40 40" />
+    <geom type="capsule" fromto="0 0 0 -0.00958 -0.3098 0.00547" size="0.05" mass="6.651" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+    <site name="skin_thigh_l" type="capsule" fromto="0 0 0 -0.00958 -0.3098 0.00547" size="0.058" rgba="0 0 0 0" />
+    <body name="shank_l" pos="-0.00958 -0.3098 0.00547">
+     <joint name="knee_flex_l" axis="1 0 0" range="-5 155" />
+     <geom type="capsule" fromto="0 0 0 -0.00761 -0.27821 -0.00965" size="0.038" mass="2.1645" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+     <site name="skin_shank_l" type="capsule" fromto="0 0 0 -0.00761 -0.27821 -0.00965" size="0.046" rgba="0 0 0 0" />
+     <body name="foot_l" pos="-0.00761 -0.27821 -0.00965">
+      <joint name="ankle_dorsi_l" axis="-1 0 0" range="-45 40" />
+      <joint name="ankle_inv_l" axis="0 0 -1" range="-20 25" />
+      <geom type="capsule" fromto="0 0 0 0 -0.07 0.01" size="0.033" mass="0.0675" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+      <geom type="box" pos="0.004 -0.105 0.009" size="0.046 0.031 0.071" mass="0.3555" rgba="1 1 1 1" class="mass" />
+      <geom type="capsule" fromto="-0.015 -0.12 -0.046 0.019 -0.12 -0.046" size="0.016" mass="0.0135" rgba="1 1 1 1" friction="0.9 0.005 0.0001" class="pad" contype="2" conaffinity="1" />
+      <geom type="capsule" fromto="0.028 -0.124 -0.03 0.036 -0.124 0.048" size="0.012" mass="0.00675" rgba="1 1 1 1" friction="0.9 0.005 0.0001" class="pad" contype="2" conaffinity="1" />
+      <geom type="capsule" fromto="-0.036 -0.124 0.074 0.04 -0.124 0.05" size="0.012" mass="0.00675" rgba="1 1 1 1" friction="0.9 0.005 0.0001" class="pad" contype="2" conaffinity="1" />
+      <site name="skin_foot_l" type="capsule" fromto="0 0 0 0 -0.07 0.01" size="0.041" rgba="0 0 0 0" />
+      <site name="skin_foot_l_sole_heel" type="box" pos="0.004 -0.105 -0.031" size="0.054 0.039 0.035" rgba="0 0 0 0" />
+      <site name="skin_foot_l_sole_fore" type="box" pos="0.004 -0.105 0.04" size="0.054 0.039 0.044" rgba="0 0 0 0" />
+      <body name="toes_l" pos="-0.00446 -0.10041 0.07475">
+       <joint name="toes_ext_l" axis="-1 0 0" range="-30 60" />
+       <geom type="box" pos="-0.004 -0.016 0.034" size="0.04 0.02 0.036" mass="0.1305" rgba="1 1 1 1" friction="0.9 0.005 0.0001" class="pad" contype="2" conaffinity="1" />
+       <site name="skin_toes_l" type="box" pos="-0.004 -0.016 0.034" size="0.048 0.028 0.044" rgba="0 0 0 0" />
+      </body>
+     </body>
+    </body>
+   </body>
+   <body name="thigh_r" pos="-0.06975 -0.03413 0.00529">
+    <joint name="hip_flex_r" axis="-1 0 0" range="-20 130" />
+    <joint name="hip_abd_r" axis="0 0 -1" range="-25 45" />
+    <joint name="hip_rot_r" axis="0 1 0" range="-40 40" />
+    <geom type="capsule" fromto="0 0 0 0.00958 -0.3098 0.00547" size="0.05" mass="6.651" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+    <site name="skin_thigh_r" type="capsule" fromto="0 0 0 0.00958 -0.3098 0.00547" size="0.058" rgba="0 0 0 0" />
+    <body name="shank_r" pos="0.00958 -0.3098 0.00547">
+     <joint name="knee_flex_r" axis="1 0 0" range="-5 155" />
+     <geom type="capsule" fromto="0 0 0 0.00761 -0.27821 -0.00965" size="0.038" mass="2.1645" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+     <site name="skin_shank_r" type="capsule" fromto="0 0 0 0.00761 -0.27821 -0.00965" size="0.046" rgba="0 0 0 0" />
+     <body name="foot_r" pos="0.00761 -0.27821 -0.00965">
+      <joint name="ankle_dorsi_r" axis="-1 0 0" range="-45 40" />
+      <joint name="ankle_inv_r" axis="0 0 1" range="-20 25" />
+      <geom type="capsule" fromto="0 0 0 0 -0.07 0.01" size="0.033" mass="0.0675" rgba="1 1 1 1" class="body" contype="2" conaffinity="1" />
+      <geom type="box" pos="-0.004 -0.105 0.009" size="0.046 0.031 0.071" mass="0.3555" rgba="1 1 1 1" class="mass" />
+      <geom type="capsule" fromto="0.015 -0.12 -0.046 -0.019 -0.12 -0.046" size="0.016" mass="0.0135" rgba="1 1 1 1" friction="0.9 0.005 0.0001" class="pad" contype="2" conaffinity="1" />
+      <geom type="capsule" fromto="-0.028 -0.124 -0.03 -0.036 -0.124 0.048" size="0.012" mass="0.00675" rgba="1 1 1 1" friction="0.9 0.005 0.0001" class="pad" contype="2" conaffinity="1" />
+      <geom type="capsule" fromto="0.036 -0.124 0.074 -0.04 -0.124 0.05" size="0.012" mass="0.00675" rgba="1 1 1 1" friction="0.9 0.005 0.0001" class="pad" contype="2" conaffinity="1" />
+      <site name="skin_foot_r" type="capsule" fromto="0 0 0 0 -0.07 0.01" size="0.041" rgba="0 0 0 0" />
+      <site name="skin_foot_r_sole_heel" type="box" pos="-0.004 -0.105 -0.031" size="0.054 0.039 0.035" rgba="0 0 0 0" />
+      <site name="skin_foot_r_sole_fore" type="box" pos="-0.004 -0.105 0.04" size="0.054 0.039 0.044" rgba="0 0 0 0" />
+      <body name="toes_r" pos="0.00448 -0.1004 0.07475">
+       <joint name="toes_ext_r" axis="-1 0 0" range="-30 60" />
+       <geom type="box" pos="0.004 -0.016 0.034" size="0.04 0.02 0.036" mass="0.1305" rgba="1 1 1 1" friction="0.9 0.005 0.0001" class="pad" contype="2" conaffinity="1" />
+       <site name="skin_toes_r" type="box" pos="0.004 -0.016 0.034" size="0.048 0.028 0.044" rgba="0 0 0 0" />
+      </body>
+     </body>
+    </body>
+   </body>
+  </body>
+ </worldbody>
+ <contact>
+  <exclude body1="thorax" body2="upperarm_l" />
+  <exclude body1="thorax" body2="upperarm_r" />
+  <exclude body1="clavicle_l" body2="neck" />
+  <exclude body1="clavicle_r" body2="neck" />
+ </contact>
+ <equality>
+  <weld name="hold_pelvis" body1="pelvis" active="false" />
+ </equality>
+ <sensor>
+  <touch name="touch_pelvis" site="skin_pelvis" />
+  <touch name="touch_abdomen" site="skin_abdomen" />
+  <touch name="touch_thorax" site="skin_thorax" />
+  <touch name="touch_neck" site="skin_neck" />
+  <touch name="touch_head" site="skin_head" />
+  <touch name="touch_clavicle_l" site="skin_clavicle_l" />
+  <touch name="touch_upperarm_l" site="skin_upperarm_l" />
+  <touch name="touch_forearm_l" site="skin_forearm_l" />
+  <touch name="touch_hand_l" site="skin_hand_l" />
+  <touch name="touch_clavicle_r" site="skin_clavicle_r" />
+  <touch name="touch_upperarm_r" site="skin_upperarm_r" />
+  <touch name="touch_forearm_r" site="skin_forearm_r" />
+  <touch name="touch_hand_r" site="skin_hand_r" />
+  <touch name="touch_thigh_l" site="skin_thigh_l" />
+  <touch name="touch_shank_l" site="skin_shank_l" />
+  <touch name="touch_foot_l" site="skin_foot_l" />
+  <touch name="touch_foot_l_sole_heel" site="skin_foot_l_sole_heel" />
+  <touch name="touch_foot_l_sole_fore" site="skin_foot_l_sole_fore" />
+  <touch name="touch_toes_l" site="skin_toes_l" />
+  <touch name="touch_thigh_r" site="skin_thigh_r" />
+  <touch name="touch_shank_r" site="skin_shank_r" />
+  <touch name="touch_foot_r" site="skin_foot_r" />
+  <touch name="touch_foot_r_sole_heel" site="skin_foot_r_sole_heel" />
+  <touch name="touch_foot_r_sole_fore" site="skin_foot_r_sole_fore" />
+  <touch name="touch_toes_r" site="skin_toes_r" />
+  <gyro name="canal" site="inner_ear" />
+  <accelerometer name="otolith" site="inner_ear" />
+ </sensor>
+<actuator><position name="lumbar_flex" joint="lumbar_flex" kp="250" kv="15" forcelimited="true" forcerange="-110 70" /><position name="lumbar_bend" joint="lumbar_bend" kp="250" kv="15" forcelimited="true" forcerange="-70 70" /><position name="lumbar_rot" joint="lumbar_rot" kp="250" kv="15" forcelimited="true" forcerange="-40 40" /><position name="thoracic_flex" joint="thoracic_flex" kp="150" kv="9" forcelimited="true" forcerange="-60 40" /><position name="thoracic_bend" joint="thoracic_bend" kp="150" kv="9" forcelimited="true" forcerange="-40 40" /><position name="thoracic_rot" joint="thoracic_rot" kp="150" kv="9" forcelimited="true" forcerange="-25 25" /><position name="neck_flex" joint="neck_flex" kp="25" kv="1.5" forcelimited="true" forcerange="-20 12" /><position name="neck_bend" joint="neck_bend" kp="25" kv="1.5" forcelimited="true" forcerange="-12 12" /><position name="neck_rot" joint="neck_rot" kp="25" kv="1.5" forcelimited="true" forcerange="-8 8" /><position name="head_flex" joint="head_flex" kp="8" kv="0.48" forcelimited="true" forcerange="-12 8" /><position name="head_bend" joint="head_bend" kp="8" kv="0.48" forcelimited="true" forcerange="-6 6" /><position name="head_rot" joint="head_rot" kp="8" kv="0.48" forcelimited="true" forcerange="-6 6" /><position name="sc_elev_l" joint="sc_elev_l" kp="15" kv="0.9" forcelimited="true" forcerange="-20 25" /><position name="sc_prot_l" joint="sc_prot_l" kp="15" kv="0.9" forcelimited="true" forcerange="-20 20" /><position name="shoulder_abd_l" joint="shoulder_abd_l" kp="20" kv="1.2" forcelimited="true" forcerange="-45 35" /><position name="shoulder_flex_l" joint="shoulder_flex_l" kp="20" kv="1.2" forcelimited="true" forcerange="-45 40" /><position name="shoulder_rot_l" joint="shoulder_rot_l" kp="20" kv="1.2" forcelimited="true" forcerange="-20 20" /><position name="elbow_flex_l" joint="elbow_flex_l" kp="12" kv="0.72" forcelimited="true" forcerange="-25 35" /><position name="pronation_l" joint="pronation_l" kp="2" kv="0.12" forcelimited="true" forcerange="-4 4" /><position name="wrist_flex_l" joint="wrist_flex_l" kp="3" kv="0.18" forcelimited="true" forcerange="-6 8" /><position name="wrist_dev_l" joint="wrist_dev_l" kp="3" kv="0.18" forcelimited="true" forcerange="-6 6" /><position name="sc_elev_r" joint="sc_elev_r" kp="15" kv="0.9" forcelimited="true" forcerange="-20 25" /><position name="sc_prot_r" joint="sc_prot_r" kp="15" kv="0.9" forcelimited="true" forcerange="-20 20" /><position name="shoulder_abd_r" joint="shoulder_abd_r" kp="20" kv="1.2" forcelimited="true" forcerange="-45 35" /><position name="shoulder_flex_r" joint="shoulder_flex_r" kp="20" kv="1.2" forcelimited="true" forcerange="-45 40" /><position name="shoulder_rot_r" joint="shoulder_rot_r" kp="20" kv="1.2" forcelimited="true" forcerange="-20 20" /><position name="elbow_flex_r" joint="elbow_flex_r" kp="12" kv="0.72" forcelimited="true" forcerange="-25 35" /><position name="pronation_r" joint="pronation_r" kp="2" kv="0.12" forcelimited="true" forcerange="-4 4" /><position name="wrist_flex_r" joint="wrist_flex_r" kp="3" kv="0.18" forcelimited="true" forcerange="-6 8" /><position name="wrist_dev_r" joint="wrist_dev_r" kp="3" kv="0.18" forcelimited="true" forcerange="-6 6" /><position name="hip_flex_l" joint="hip_flex_l" kp="300" kv="18" forcelimited="true" forcerange="-180 120" /><position name="hip_abd_l" joint="hip_abd_l" kp="300" kv="18" forcelimited="true" forcerange="-70 70" /><position name="hip_rot_l" joint="hip_rot_l" kp="60" kv="3.6" forcelimited="true" forcerange="-30 30" /><position name="knee_flex_l" joint="knee_flex_l" kp="300" kv="18" forcelimited="true" forcerange="-162 125" /><position name="ankle_dorsi_l" joint="ankle_dorsi_l" kp="400" kv="24" forcelimited="true" forcerange="-140 25" /><position name="ankle_inv_l" joint="ankle_inv_l" kp="100" kv="6" forcelimited="true" forcerange="-15 20" /><position name="toes_ext_l" joint="toes_ext_l" kp="10" kv="0.6" forcelimited="true" forcerange="-12 6" /><position name="hip_flex_r" joint="hip_flex_r" kp="300" kv="18" forcelimited="true" forcerange="-180 120" /><position name="hip_abd_r" joint="hip_abd_r" kp="300" kv="18" forcelimited="true" forcerange="-70 70" /><position name="hip_rot_r" joint="hip_rot_r" kp="60" kv="3.6" forcelimited="true" forcerange="-30 30" /><position name="knee_flex_r" joint="knee_flex_r" kp="300" kv="18" forcelimited="true" forcerange="-162 125" /><position name="ankle_dorsi_r" joint="ankle_dorsi_r" kp="400" kv="24" forcelimited="true" forcerange="-140 25" /><position name="ankle_inv_r" joint="ankle_inv_r" kp="100" kv="6" forcelimited="true" forcerange="-15 20" /><position name="toes_ext_r" joint="toes_ext_r" kp="10" kv="0.6" forcelimited="true" forcerange="-12 6" /></actuator></mujoco>

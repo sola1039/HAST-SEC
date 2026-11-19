@@ -1,11 +1,12 @@
 node_modules/
-Temp/
-runtime/
-local.settings.json
-assets/avatar.vrm
-assets/models/
 .env
 .env.*
 *.log
 *.pid
 *.zip
+# v0.1 (HAST-SEC): generated or local files
+v0.1/Temp/
+v0.1/runtime/
+v0.1/local.settings.json
+v0.1/assets/avatar.vrm
+v0.1/assets/models/

@@ -1,0 +1,21 @@
+ReflexBody Lite 第三方声明
+
+本发布包包含以下第三方软件, 均为未修改的原始文件, 遵循各自许可.
+
+1. MuJoCo WebAssembly 绑定 (@mujoco/mujoco 4.0.1)
+   来源: https://github.com/google-deepmind/mujoco (wasm 目录)
+   许可: Apache License 2.0, 全文见 licenses/MuJoCo-Apache-2.0.txt
+   文件: vendor/mujoco/mujoco.js, vendor/mujoco/mujoco.wasm
+
+2. three.js (0.180.0)
+   来源: https://github.com/mrdoob/three.js
+   许可: MIT License, 全文见 licenses/three.js-LICENSE.txt
+   文件: vendor/three/build/three.module.js, vendor/three/build/three.core.js,
+         vendor/three/examples/jsm/controls/OrbitControls.js
+
+模型资源说明:
+model/ 中的动作数据由项目方在物理仿真中生成, 不包含任何第三方动作捕捉的原始帧.
+生成过程中参考了以下公开动作捕捉数据, 在此致谢并署名:
+- LAFAN1 (Ubisoft La Forge, Harvey et al. 2020, "Robust Motion In-betweening"), https://github.com/ubisoft/ubisoft-laforge-animation-dataset, CC BY-NC-ND 4.0
+- ACCAD Motion Capture Library (The Ohio State University, Advanced Computing Center for the Arts and Design), https://accad.osu.edu/research/motion-lab/mocap-system-and-data, CC BY 3.0
+初始站姿为项目方手工设定的关节角度.

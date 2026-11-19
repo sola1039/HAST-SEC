@@ -11,8 +11,7 @@ ReflexBody Lite 第三方声明
    来源: https://github.com/mrdoob/three.js
    许可: MIT License, 全文见 licenses/three.js-LICENSE.txt
    文件: vendor/three/build/three.module.js, vendor/three/build/three.core.js,
-         vendor/three/examples/jsm/controls/OrbitControls.js,
-         vendor/three/examples/jsm/environments/RoomEnvironment.js
+         vendor/three/examples/jsm/controls/OrbitControls.js
 
 模型资源说明:
 model/ 中的动作数据由项目方在物理仿真中生成, 不包含任何第三方动作捕捉的原始帧.

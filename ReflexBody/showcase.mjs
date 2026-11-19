@@ -8,7 +8,7 @@ import {arenaXml,createArena} from './runtime/arena.mjs';
 import {createBodyView} from './runtime/render.mjs';
 import {loadTracker,Tracker} from './runtime/tracker.mjs';
 import {mb,manifest,fetchBytes,withCountedFetch} from './loading.mjs';
-import {applyLook,createTether} from './look.mjs';
+import {createTether} from './tether.mjs';
 
 const $=id=>document.getElementById(id);
 const handset=matchMedia('(max-width: 600px)').matches;
@@ -89,7 +89,7 @@ async function start(){
  const sim=createSim(mj,arenaXml(xml),DT),{model,data}=sim,floor=model.geom('floor').id;
  model.geom_priority[floor]=1;model.geom_friction[floor*3]=.5;
  const {scene,camera,renderer,controls,follow}=createArenaScene(stage);
- const view=createBodyView(scene,sim,meta),arena=createArena(scene),look=applyLook({scene,renderer,view,sim});
+ const view=createBodyView(scene,sim,meta),arena=createArena(scene);
  view.meshes.filter(m=>m.userData.body===0).forEach(m=>{m.visible=false;});
  const bodyMeshes=view.meshes.filter(m=>m.userData.body!==0);
  const pickBody=ray=>{const h=ray.intersectObjects(bodyMeshes,false)[0];return h&&{body:h.object.userData.body,point:h.point};};
@@ -142,7 +142,7 @@ async function start(){
   frameHandle=0;if(document.hidden)return;
   const dt=Math.min(.04,(now-last)/1000);last=now;
   if(tracker){simLag+=dt;let n=0;while(simLag>=DT&&n<MAX_STEPS){step();simLag-=DT;n++;}if(n===MAX_STEPS)simLag=0;}
-  view.update(dt);arena.update(model,data);look.update(data.qpos[0],data.qpos[1],data.qpos[2]);
+  view.update(dt);arena.update(model,data);
   const g=pull.grab();tether.draw(g&&spring?spring.point:null,[ripple.offsetLeft,ripple.offsetTop],spring?Math.hypot(...spring.force):0);
   if(!pull.grab())follow(data.qpos[0],data.qpos[2],dt);else controls.update();
   renderer.render(scene,camera);

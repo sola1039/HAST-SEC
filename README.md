@@ -37,7 +37,8 @@
 **两个开源版本**
 
 - **skill11b**(`ReflexBody/`): 受拉更稳, 练过上半身受干扰, 更适合拿来跑交互.
-- **skill07**(`ReflexBody/skill07/`): 早期基线版, 更适合做对照研究; 许可允许非商业的训练、微调与蒸馏.
+- **skill07**(`ReflexBody/skill07/`): 早期基线版, 更适合做对照研究.
+- 两个版本都允许非商业的训练、微调与蒸馏, 由此得到的模型也禁止商用.
 - 最新版本 skill14 由于版权限制暂不公开.
 
 **本版边界**
@@ -96,8 +97,7 @@ HAST-SEC/
 
 两个版本都是**源码可见的非商业版本**, 不允许商业使用:
 
-- ReflexBody skill11b: [ReflexBody/LICENSE](ReflexBody/LICENSE). 另外禁止修改后再分发模型数据, 禁止用它们训练或蒸馏其他模型.
-- ReflexBody skill07: [ReflexBody/skill07/LICENSE](ReflexBody/skill07/LICENSE). 允许非商业的训练、微调与蒸馏.
+- ReflexBody skill11b: [ReflexBody/LICENSE](ReflexBody/LICENSE); skill07: [ReflexBody/skill07/LICENSE](ReflexBody/skill07/LICENSE). 两者都允许非商业的训练、微调与蒸馏, 由此得到的模型同样禁止商用.
 - HAST-SEC v0.1: [v0.1/LICENSE](v0.1/LICENSE).
 - 第三方软件与素材遵循各自许可, 见各文件夹的 `THIRD_PARTY_NOTICES.txt`.
 
@@ -116,7 +116,7 @@ HAST-SEC/
 
 Research releases of **Lumen**, an embodied virtual character by 武汉光影流明科技有限公司 (Wuhan, China).
 
-- **ReflexBody** ([ReflexBody/](ReflexBody/), [live demo](https://sola1039.github.io/HAST-SEC/ReflexBody/)): a physics-based humanoid robot in the browser that you can pull by any body part. Two open versions: skill11b (steadier, for interaction) and skill07 ([ReflexBody/skill07/](ReflexBody/skill07/), a baseline whose licence allows non-commercial training and distillation). MuJoCo compiled to WebAssembly steps the body every 5 ms and a controller keeps it standing. Runs on phones; no GPU or server needed. These releases support pulling only.
+- **ReflexBody** ([ReflexBody/](ReflexBody/), [live demo](https://sola1039.github.io/HAST-SEC/ReflexBody/)): a physics-based humanoid robot in the browser that you can pull by any body part. Two open versions: skill11b (steadier, for interaction) and skill07 ([ReflexBody/skill07/](ReflexBody/skill07/), a baseline). Both licences allow non-commercial training, fine-tuning and distillation; commercial use of the releases or of models derived from them is not allowed. MuJoCo compiled to WebAssembly steps the body every 5 ms and a controller keeps it standing. Runs on phones; no GPU or server needed. These releases support pulling only.
 - **HAST-SEC v0.1** ([v0.1/](v0.1/)): Chinese-language control of a VRM character's motion with a small local language model.
 
 The system starts from about eleven minutes of motion capture and was trained on consumer GPUs; details will follow with our paper. Both releases are source-available for **non-commercial use only**. Contact: zhouzihuai@las-lumen.cn

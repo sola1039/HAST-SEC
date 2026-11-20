@@ -1,25 +1,11 @@
-// The showcase as a humanoid robot in a simulation scene: graphite and silver metal parts, a dark visor with a light strip, a chest
-// light, joint rings; a checkered blue-grey ground under a gradient sky. The visor, lights and rings are drawn only and follow the
-// body's parts each frame; the physics does not know them.
+// The showcase as the Unitree G1 robot in a simulation scene: the G1's meshes (robot/g1.bin, made by tools/build_robot_skin.py from
+// the MuJoCo Menagerie unitree_g1, BSD-3-Clause, Unitree Robotics) drawn on the physics body's segments, which are hidden; the
+// physics is the body's own. A checkered blue-grey ground under a gradient sky.
 import * as T from 'three';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 
 const FLOOR_SIZE=12;  // the floor plane the body view makes (its grid is hidden)
-const GLOW=0x39c5ff;
-const METAL={dark:0x2a2f37,silver:0xc4cad3,black:0x15171b};
-const PART=[[/^thorax|^abdomen|^pelvis|^neck|^clavicle/,'dark'],[/^upperarm|^thigh/,'silver'],[/^forearm|^shank|^hand/,'dark'],[/^foot|^toes/,'black'],[/^head/,'dark']];
-// the head's ellipsoid in its frame (centre, radii), for the visor
-const HEAD={c:[0,.07,.016],r:[.074,.084,.07]};
-// joint rings: at the origin of these parts' frames (shoulder, elbow, hip, knee), across their left-right axis
-const RINGS=[['upperarm',.042],['forearm',.034],['thigh',.056],['shank',.044]];
 
-function metal(kind){
- const c=METAL[kind];
- return new T.MeshPhysicalMaterial({color:c,metalness:kind==='silver'?.55:.45,roughness:kind==='black'?.8:kind==='silver'?.32:.4,clearcoat:kind==='black'?0:.6,clearcoatRoughness:.25});
-}
-const glow=(intensity=2.2)=>new T.MeshStandardMaterial({color:0x0b1a24,emissive:GLOW,emissiveIntensity:intensity,roughness:.4});
-
-// the ground of a robot simulator: blue-grey checks with light edges, 0.5 m squares
 function checkerTexture(){
  const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');
  for(let i=0;i<2;i++)for(let j=0;j<2;j++){g.fillStyle=(i+j)%2?'#2f4357':'#22323f';g.fillRect(i*128,j*128,128,128);}
@@ -31,33 +17,19 @@ function skyTexture(){
  r.addColorStop(0,'#0c1622');r.addColorStop(.55,'#3c5b7a');r.addColorStop(1,'#8fa9c2');g.fillStyle=r;g.fillRect(0,0,2,256);
  const t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;return t;
 }
+const MATERIAL={
+ black:()=>new T.MeshPhysicalMaterial({color:0x2a2c30,metalness:.35,roughness:.45,clearcoat:.4,clearcoatRoughness:.3}),
+ metal:()=>new T.MeshPhysicalMaterial({color:0xb9bec6,metalness:.6,roughness:.35,clearcoat:.5,clearcoatRoughness:.25}),
+};
 
-// a drawn piece that follows body b of the physics
-function follow(piece,b,data){
- piece.matrixAutoUpdate=false;const m=new T.Matrix4();
- return()=>{const p=data.xpos,r=data.xmat,i=3*b,k=9*b;m.set(r[k],r[k+1],r[k+2],p[i],r[k+3],r[k+4],r[k+5],p[i+1],r[k+6],r[k+7],r[k+8],p[i+2],0,0,0,1);piece.matrix.copy(m);piece.matrixWorldNeedsUpdate=true;};
-}
-function visor(){
- const g=new T.Group(),front=Math.PI/2;
- // a dark glass shell over the face and a light strip across it
- const shell=new T.Mesh(new T.SphereGeometry(1,40,20,front-1.15,2.3,.3*Math.PI,.42*Math.PI),new T.MeshPhysicalMaterial({color:0x07090c,metalness:.2,roughness:.08,clearcoat:1,clearcoatRoughness:.05}));
- const strip=new T.Mesh(new T.SphereGeometry(1,40,4,front-.85,1.7,.47*Math.PI,.045*Math.PI),glow(2.6));
- shell.scale.set(...HEAD.r.map(r=>r*1.04));strip.scale.set(...HEAD.r.map(r=>r*1.06));
- for(const m of [shell,strip]){m.position.set(...HEAD.c);g.add(m);}
- return g;
-}
-function chestLight(){
- const g=new T.Group(),m=new T.Mesh(new T.CircleGeometry(.018,24),glow(3));
- const ring=new T.Mesh(new T.RingGeometry(.022,.028,32),glow(1.2));
- for(const x of [m,ring]){x.position.set(0,.11,.098);g.add(x);}
- return g;
-}
-function jointRing(r){
- const g=new T.Group(),disc=new T.Mesh(new T.CylinderGeometry(r,r,.034,32),metal('black')),band=new T.Mesh(new T.TorusGeometry(r*.92,.0035,8,40),glow(1.4));
- disc.rotation.z=Math.PI/2;band.rotation.y=Math.PI/2;g.add(disc,band);return g;
+export async function loadRobot(base='./robot/'){
+ const [meta,buf]=await Promise.all([fetch(base+'g1.json').then(r=>{if(!r.ok)throw Error('机器人模型读取失败');return r.json();}),
+  fetch(base+'g1.bin').then(r=>{if(!r.ok)throw Error('机器人模型读取失败');return r.arrayBuffer();})]);
+ return {meta,pos:new Float32Array(buf,0,meta.vertices*3),index:new Uint32Array(buf,meta.vertices*12,meta.indices)};
 }
 
-export function applyRobot({scene,renderer,view,sim}){
+// scene: the robot's pieces on the body's segments; returns update() for every frame and the meshes a finger can take
+export function applyRobot({scene,renderer,view,sim,robot}){
  renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
  const pmrem=new T.PMREMGenerator(renderer);
  scene.environment=pmrem.fromScene(new RoomEnvironment(),.04).texture;scene.environmentIntensity=.6;pmrem.dispose();
@@ -66,13 +38,23 @@ export function applyRobot({scene,renderer,view,sim}){
   if(o.isGridHelper)o.visible=false;
   else if(o.isMesh&&o.geometry?.parameters?.width===FLOOR_SIZE)o.material=new T.MeshStandardMaterial({map:checkerTexture(),roughness:.85,metalness:0});
  });
- for(const m of view.meshes){
-  if(m.userData.body===0)continue;
-  const kind=(PART.find(([re])=>re.test(m.userData.name))?.[1])??'dark';
-  m.material=metal(kind);m.userData.base=m.material.color.clone();
+ // the physics body: hidden, the robot drawn instead (?bones=1: shown as a wireframe over the robot, to check the fit)
+ const bones=new URLSearchParams(location.search).has('bones');
+ for(const m of view.meshes)if(m.userData.body!==0){if(bones)m.material=new T.MeshBasicMaterial({color:0xff3366,wireframe:true});else m.visible=false;}
+ const {model,data}=sim,mats={black:MATERIAL.black(),metal:MATERIAL.metal()},pieces=[];
+ for(const p of robot.meta.pieces){
+  const g=new T.BufferGeometry(),[v0,vn]=p.vert,[i0,inn]=p.index;
+  g.setAttribute('position',new T.BufferAttribute(robot.pos.subarray(3*v0,3*(v0+vn)),3));
+  g.setIndex(new T.BufferAttribute(robot.index.subarray(i0,i0+inn),1));g.computeVertexNormals();g.computeBoundingSphere();
+  const mesh=new T.Mesh(g,mats[p.material]??mats.metal),body=model.body(p.segment).id;
+  mesh.castShadow=true;mesh.matrixAutoUpdate=false;mesh.userData={body,name:p.segment};scene.add(mesh);pieces.push(mesh);
  }
- const {model,data}=sim,pieces=[[visor(),'head'],[chestLight(),'thorax']];
- for(const [name,r] of RINGS)for(const side of ['l','r'])pieces.push([jointRing(r),`${name}_${side}`]);
- const pose=pieces.map(([piece,name])=>{piece.traverse(o=>{if(o.isMesh)o.castShadow=true;});scene.add(piece);return follow(piece,model.body(name).id,data);});
- return{update(){for(const p of pose)p();}};
+ const m4=new T.Matrix4();
+ return{
+  meshes:pieces,
+  update(){
+   const x=data.xpos,r=data.xmat;
+   for(const mesh of pieces){const b=mesh.userData.body,i=3*b,k=9*b;
+    m4.set(r[k],r[k+1],r[k+2],x[i],r[k+3],r[k+4],r[k+5],x[i+1],r[k+6],r[k+7],r[k+8],x[i+2],0,0,0,1);mesh.matrix.copy(m4);mesh.matrixWorldNeedsUpdate=true;}
+  }};
 }

@@ -9,7 +9,7 @@ import {createBodyView} from './runtime/render.mjs';
 import {loadTracker,Tracker} from './runtime/tracker.mjs';
 import {mb,manifest,fetchBytes,withCountedFetch} from './loading.mjs';
 import {createTether} from './tether.mjs';
-import {applyRobot} from './robot.mjs';
+import {applyRobot,loadRobot} from './robot.mjs';
 
 const $=id=>document.getElementById(id);
 const handset=matchMedia('(max-width: 600px)').matches;
@@ -82,19 +82,21 @@ async function start(){
  const stage=$('stage'),app=$('app'),reset=$('reset'),status=$('status'),ripple=$('ripple'),hint=$('hint'),latency=$('latency'),memory=$('memory');
  const sizes=await manifest(),total=k=>sizes?.[k]??0;
  phase='下载物理引擎';let got=0;const engine=total('vendor/mujoco/mujoco.wasm');
- const lib=Object.entries(sizes??{}).filter(([k])=>k.startsWith(MODEL.slice(2))).reduce((a,[,v])=>a+v,0),all=engine+lib;
+ const lib=Object.entries(sizes??{}).filter(([k])=>k.startsWith(MODEL.slice(2))).reduce((a,[,v])=>a+v,0),skin=total('robot/g1.bin'),all=engine+skin+lib;
  const show=(what,n)=>say(`${what} ${mb(n)}${all?` / ${mb(all)}`:''} MB`,all?n/all:undefined);
  show('正在下载物理引擎',0);
  const wasmBinary=await fetchBytes('./vendor/mujoco/mujoco.wasm',n=>{got+=n;show('正在下载物理引擎',got);});
+ phase='下载机器人模型';
+ const skinData=await withCountedFetch(n=>{got+=n;show('正在下载机器人模型',got);},()=>loadRobot('./robot/'));
  phase='初始化物理';say('正在初始化物理');
  const [mj,xml,idle,meta]=await Promise.all([loadMujoco({wasmBinary}),resource('./model/body_torque.xml','text'),resource('./model/idle_stand.json','json'),resource('./model/body.meta.json','json')]);
  const sim=createSim(mj,arenaXml(xml),DT),{model,data}=sim,floor=model.geom('floor').id;
  model.geom_priority[floor]=1;model.geom_friction[floor*3]=.5;
  const {scene,camera,renderer,controls,follow}=createArenaScene(stage);
- const view=createBodyView(scene,sim,meta),arena=createArena(scene),robot=applyRobot({scene,renderer,view,sim});
+ const view=createBodyView(scene,sim,meta),arena=createArena(scene),robot=applyRobot({scene,renderer,view,sim,robot:skinData});
  view.meshes.filter(m=>m.userData.body===0).forEach(m=>{m.visible=false;});
  const bodyMeshes=view.meshes.filter(m=>m.userData.body!==0);
- const pickBody=ray=>{const h=ray.intersectObjects(bodyMeshes,false)[0];return h&&{body:h.object.userData.body,point:h.point};};
+ const pickBody=ray=>{const h=ray.intersectObjects(robot.meshes,false)[0];return h&&{body:h.object.userData.body,point:h.point};};  // the robot's shell takes the finger
  let tracker=null,nextControl=0,spring=null,hintTimer=0,falls=0;
  const tether=createTether({tether:$('tether'),label:$('force'),camera,canvas:renderer.domElement});
  function showHint(text,ms=3200){hint.textContent=text;hint.classList.add('is-on');clearTimeout(hintTimer);if(ms)hintTimer=setTimeout(()=>hint.classList.remove('is-on'),ms);}

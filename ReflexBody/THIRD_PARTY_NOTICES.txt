@@ -14,6 +14,13 @@ ReflexBody Lite 第三方声明
          vendor/three/examples/jsm/controls/OrbitControls.js,
          vendor/three/examples/jsm/environments/RoomEnvironment.js
 
+3. Unitree G1 机器人模型(网格, 来自 MuJoCo Menagerie unitree_g1)
+   来源: https://github.com/google-deepmind/mujoco_menagerie/tree/main/unitree_g1
+   版权: Copyright (c) 2016-2023 HangZhou YuShu TECHNOLOGY CO.,LTD. ("Unitree Robotics")
+   许可: BSD 3-Clause License, 全文见 licenses/Unitree-G1-BSD-3-Clause.txt
+   文件: robot/g1.bin, robot/g1.json(由原始网格换算到本项目身体各体段的坐标, 只作展台外观)
+   说明: 本项目不是宇树科技的产品, 未经宇树科技认可或背书; 物理身体与控制为本项目自有.
+
 模型资源说明:
 model/ 中的动作数据由项目方在物理仿真中生成, 不包含任何第三方动作捕捉的原始帧.
 生成过程中参考了以下公开动作捕捉数据, 在此致谢并署名:

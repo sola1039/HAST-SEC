@@ -15,7 +15,7 @@
 | **ReflexBody skill07** | 同一系统的基线版, 适合做对照、训练与蒸馏研究 | 同上 | [ReflexBody/skill07/](ReflexBody/skill07/) |
 | **HAST-SEC v0.1** | 中文聊天驱动的角色动作控制, 运动学层: 自然待机、行走与局部动作 | Windows + Node.js 22, 本地中文小模型 | [v0.1/](v0.1/) |
 
-##👾在线体验👾##: [skill11b 展台](https://sola1039.github.io/HAST-SEC/ReflexBody/) · [skill07 基线](https://sola1039.github.io/HAST-SEC/ReflexBody/skill07/) (电脑和手机都可以直接打开)
+##👾在线体验👾: [skill11b 展台](https://sola1039.github.io/HAST-SEC/ReflexBody/) · [skill07 基线](https://sola1039.github.io/HAST-SEC/ReflexBody/skill07/) (电脑和手机都可以直接打开)
 
 ## ReflexBody 抗干扰能力
 

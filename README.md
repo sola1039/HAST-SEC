@@ -106,6 +106,7 @@ npm start          # 打开 http://127.0.0.1:8769/language-lab
 ```
 HAST-SEC/
 ├── README.md        本文件
+├── LICENSE*         许可证(总览与各类型全文)
 ├── docs/images/     首页图片
 ├── ReflexBody/      ReflexBody skill11b(纯静态网页, 可直接部署)
 │   └── skill07/     ReflexBody skill07 基线版
@@ -114,13 +115,17 @@ HAST-SEC/
 
 ## 许可
 
-两个版本都是**源码可见的非商业版本**, 不允许商业使用:
+许可证都在仓库根目录, 总览见 [LICENSE](LICENSE). 我们自有的部分都是**源码可见的非商业版本**, 不允许商业使用:
 
-- ReflexBody skill11b: [ReflexBody/LICENSE](ReflexBody/LICENSE); skill07: [ReflexBody/skill07/LICENSE](ReflexBody/skill07/LICENSE). 两者都允许非商业的训练、微调与蒸馏, 由此得到的模型同样禁止商用.
-- HAST-SEC v0.1: [v0.1/LICENSE](v0.1/LICENSE).
-- 第三方软件与素材遵循各自许可, 见各文件夹的 `THIRD_PARTY_NOTICES.txt`.
+| 文件 | 适用于 |
+|---|---|
+| [LICENSE-ReflexBody-NC](LICENSE-ReflexBody-NC) | `ReflexBody/`(skill11b)与 `ReflexBody/skill07/`: 允许非商业的使用、修改、训练、微调与蒸馏, 本仓库内容及派生模型均禁止商用 |
+| [LICENSE-HAST-SEC-NC](LICENSE-HAST-SEC-NC) | `v0.1/`(HAST-SEC v0.1) |
+| [LICENSE-Apache-2.0](LICENSE-Apache-2.0) | 第三方: MuJoCo WebAssembly 绑定、Qwen 模型权重 |
+| [LICENSE-MIT](LICENSE-MIT) | 第三方: three.js、@pixiv/three-vrm、ggml / llama.cpp |
+| [LICENSE-BSD-3-Clause](LICENSE-BSD-3-Clause) | 第三方: 宇树 G1 机器人模型(展台外观) |
 
-商业授权、技术共研与合作请联系: [zhouzihuai@las-lumen.cn](mailto:zhouzihuai@las-lumen.cn). 问题反馈请提交 [Issues](https://github.com/sola1039/HAST-SEC/issues).
+各文件夹内也附有完整许可与 `THIRD_PARTY_NOTICES.txt`. 商业授权、技术共研与合作请联系: [zhouzihuai@las-lumen.cn](mailto:zhouzihuai@las-lumen.cn). 问题反馈请提交 [Issues](https://github.com/sola1039/HAST-SEC/issues).
 
 ## 关于我们
 

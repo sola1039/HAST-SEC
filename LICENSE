@@ -1,0 +1,22 @@
+本仓库的许可 / Licenses of this repository
+
+本仓库包含多个版本与第三方组件, 各部分适用不同的许可. 我们自有的部分都是源码可见的非商业许可, 不允许商业使用.
+This repository holds several releases and third-party components under different licences. Our own parts are source-available
+for non-commercial use only.
+
+我们自有的部分 / Our own parts
+- v0.1/ (HAST-SEC v0.1)                      LICENSE-HAST-SEC-NC      HAST-SEC 非商业学习与研究许可证 0.1
+- ReflexBody/ (skill11b) 与 ReflexBody/skill07/  LICENSE-ReflexBody-NC    ReflexBody 非商业使用许可证 0.2:
+                                               允许非商业的使用、修改、训练、微调与蒸馏, 本仓库内容及其派生模型均禁止商用
+
+第三方组件 / Third-party components (各自原始许可, 不受上述非商业许可约束 / under their own licences)
+- LICENSE-Apache-2.0     MuJoCo WebAssembly 绑定(ReflexBody); Qwen3.5-0.8B 模型权重(v0.1 安装时下载, 不随仓库分发)
+- LICENSE-MIT            three.js(ReflexBody, v0.1); @pixiv/three-vrm(v0.1); ggml / llama.cpp(v0.1 安装时下载)
+- LICENSE-BSD-3-Clause   宇树 G1 机器人模型(ReflexBody 展台外观; 非宇树官方产品, 未经宇树认可或背书)
+- 其他素材与角色的来源和许可见各文件夹的 THIRD_PARTY_NOTICES.txt / see each folder's THIRD_PARTY_NOTICES.txt
+
+每个文件夹内也附有完整的许可证与第三方声明, 单独下载某个文件夹时同样有效.
+Each folder also carries its full licence and third-party notices, so it stands on its own when used alone.
+
+商业授权与合作 / Commercial licensing: zhouzihuai@las-lumen.cn
+Copyright (c) 2026 武汉光影流明科技有限公司 及 HAST-SEC 项目贡献者.

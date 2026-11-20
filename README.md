@@ -11,19 +11,20 @@
 
 | 版本 | 一句话 | 运行环境 | 文件夹 |
 |---|---|---|---|
-| **ReflexBody Lite v0.1** | 浏览器里的物理数字人, 按住身体任意部位拉动, 她在物理仿真中自己保持平衡 | 任意现代浏览器, 手机可用, 纯静态网页 | [ReflexBody/](ReflexBody/) |
+| **ReflexBody skill11b** | 具身智能交互仿真: 按住人形机器人身体任意部位拉动, 它在物理仿真中自己保持平衡 | 任意现代浏览器, 手机可用, 纯静态网页 | [ReflexBody/](ReflexBody/) |
+| **ReflexBody skill07** | 同一系统的基线版, 适合做对照、训练与蒸馏研究 | 同上 | [ReflexBody/skill07/](ReflexBody/skill07/) |
 | **HAST-SEC v0.1** | 中文聊天驱动的角色动作控制, 运动学层: 自然待机、行走与局部动作 | Windows + Node.js 22, 本地中文小模型 | [v0.1/](v0.1/) |
 
-**在线体验 ReflexBody Lite**: https://sola1039.github.io/HAST-SEC/ReflexBody/ (电脑和手机都可以直接打开)
+**在线体验**: [skill11b 展台](https://sola1039.github.io/HAST-SEC/ReflexBody/) · [skill07 基线](https://sola1039.github.io/HAST-SEC/ReflexBody/skill07/) (电脑和手机都可以直接打开)
 
 ---
 
-## ReflexBody Lite v0.1: 可以拉动的物理数字人
+## ReflexBody: 可以拉动的人形机器人
 
-![ReflexBody Lite 展台](docs/images/reflexbody-lite.png)
+![ReflexBody 展台](docs/images/reflexbody-lite.png)
 
-角色的身体是一个真实的物理模型: 21 个体段、44 个关节伺服、45 千克, 在 MuJoCo 物理引擎里以 5 毫秒一步运行.
-你拉她的手、腰或头, 力直接作用在身体上; 她每 20 毫秒调整一次全身关节, 顶住、挪步或顺着拉力, 尽量不倒.
+机器人的身体是一个真实的物理模型: 21 个体段、44 个关节伺服、45 千克, 在 MuJoCo 物理引擎里以 5 毫秒一步运行.
+你拉它的手、腰或头, 力直接作用在身体上; 它每 20 毫秒调整一次全身关节, 顶住、挪步或顺着拉力, 尽量不倒.
 整个过程在浏览器本地实时运行, 不需要显卡和服务器算力.
 
 **快速开始**
@@ -32,6 +33,12 @@
 - 本地: 克隆仓库后进入 `ReflexBody/`, Windows 双击 `start.bat`; 其他系统运行 `node serve.mjs`, 打开 http://127.0.0.1:8860/ (需要 Node.js 18+).
 - 手机: `node serve.mjs --lan`, 手机连同一 Wi-Fi 打开命令行打印的地址.
 - 部署到自己的网站: 整个文件夹是静态网页, 放到 GitHub Pages、Netlify、对象存储等任何静态托管即可. 详见 [ReflexBody/README.md](ReflexBody/README.md).
+
+**两个开源版本**
+
+- **skill11b**(`ReflexBody/`): 受拉更稳, 练过上半身受干扰, 更适合拿来跑交互.
+- **skill07**(`ReflexBody/skill07/`): 早期基线版, 更适合做对照研究; 许可允许非商业的训练、微调与蒸馏.
+- 最新版本 skill14 由于版权限制暂不公开.
 
 **本版边界**
 
@@ -80,7 +87,8 @@ npm start          # 打开 http://127.0.0.1:8769/language-lab
 HAST-SEC/
 ├── README.md        本文件
 ├── docs/images/     首页图片
-├── ReflexBody/      ReflexBody Lite v0.1(纯静态网页, 可直接部署)
+├── ReflexBody/      ReflexBody skill11b(纯静态网页, 可直接部署)
+│   └── skill07/     ReflexBody skill07 基线版
 └── v0.1/            HAST-SEC v0.1(Node.js 本地服务)
 ```
 
@@ -88,7 +96,8 @@ HAST-SEC/
 
 两个版本都是**源码可见的非商业版本**, 不允许商业使用:
 
-- ReflexBody Lite: [ReflexBody/LICENSE](ReflexBody/LICENSE). 另外禁止修改后再分发网络权重与动作库, 禁止用它们训练或蒸馏其他模型.
+- ReflexBody skill11b: [ReflexBody/LICENSE](ReflexBody/LICENSE). 另外禁止修改后再分发模型数据, 禁止用它们训练或蒸馏其他模型.
+- ReflexBody skill07: [ReflexBody/skill07/LICENSE](ReflexBody/skill07/LICENSE). 允许非商业的训练、微调与蒸馏.
 - HAST-SEC v0.1: [v0.1/LICENSE](v0.1/LICENSE).
 - 第三方软件与素材遵循各自许可, 见各文件夹的 `THIRD_PARTY_NOTICES.txt`.
 
@@ -107,7 +116,7 @@ HAST-SEC/
 
 Research releases of **Lumen**, an embodied virtual character by 武汉光影流明科技有限公司 (Wuhan, China).
 
-- **ReflexBody Lite v0.1** ([ReflexBody/](ReflexBody/), [live demo](https://sola1039.github.io/HAST-SEC/ReflexBody/)): a physics-based character in the browser that you can pull by any body part. MuJoCo compiled to WebAssembly steps the body every 5 ms and a controller keeps it standing. Runs on phones; no GPU or server needed. This release supports pulling only.
+- **ReflexBody** ([ReflexBody/](ReflexBody/), [live demo](https://sola1039.github.io/HAST-SEC/ReflexBody/)): a physics-based humanoid robot in the browser that you can pull by any body part. Two open versions: skill11b (steadier, for interaction) and skill07 ([ReflexBody/skill07/](ReflexBody/skill07/), a baseline whose licence allows non-commercial training and distillation). MuJoCo compiled to WebAssembly steps the body every 5 ms and a controller keeps it standing. Runs on phones; no GPU or server needed. These releases support pulling only.
 - **HAST-SEC v0.1** ([v0.1/](v0.1/)): Chinese-language control of a VRM character's motion with a small local language model.
 
 The system starts from about eleven minutes of motion capture and was trained on consumer GPUs; details will follow with our paper. Both releases are source-available for **non-commercial use only**. Contact: zhouzihuai@las-lumen.cn

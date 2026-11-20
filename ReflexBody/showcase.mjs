@@ -1,5 +1,5 @@
-// ReflexBody Lite showcase: the physics body in a close-up arena, pulled by any part (finger or mouse). The controller runs every
-// 20 ms in the physics (MuJoCo WebAssembly, 5 ms steps). This release pulls only.
+// ReflexBody showcase: a humanoid robot in a simulation scene, pulled by any part (finger or mouse). The controller (the open model,
+// model/tracker/) runs every 20 ms in the physics (MuJoCo WebAssembly, 5 ms steps). Pull only.
 import * as T from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import loadMujoco from '@mujoco/mujoco';
@@ -9,12 +9,14 @@ import {createBodyView} from './runtime/render.mjs';
 import {loadTracker,Tracker} from './runtime/tracker.mjs';
 import {mb,manifest,fetchBytes,withCountedFetch} from './loading.mjs';
 import {createTether} from './tether.mjs';
+import {applyRobot} from './robot.mjs';
 
 const $=id=>document.getElementById(id);
 const handset=matchMedia('(max-width: 600px)').matches;
 const DT=.005,CONTROL_S=.02,WILL=.45,MAX_STEPS=12,FOLLOW=1.5,FALL_Y=.35;
 const SPRING={stiff:250,damp:20,max:200};
-const LOCKED='戳、掐、摸需要反射层, 本版未开源';
+const LOCKED='戳、掐、摸需要反射层, 暂未开放';
+const ACCENT='#3fb6ff',MODEL='./model/tracker/';
 
 async function resource(url,format){const r=await fetch(url);if(!r.ok)throw Error(`${url}: ${r.status}`);return r[format]();}
 
@@ -80,7 +82,7 @@ async function start(){
  const stage=$('stage'),app=$('app'),reset=$('reset'),status=$('status'),ripple=$('ripple'),hint=$('hint'),latency=$('latency'),memory=$('memory');
  const sizes=await manifest(),total=k=>sizes?.[k]??0;
  phase='下载物理引擎';let got=0;const engine=total('vendor/mujoco/mujoco.wasm');
- const lib=Object.entries(sizes??{}).filter(([k])=>k.startsWith('model/tracker/')).reduce((a,[,v])=>a+v,0),all=engine+lib;
+ const lib=Object.entries(sizes??{}).filter(([k])=>k.startsWith(MODEL.slice(2))).reduce((a,[,v])=>a+v,0),all=engine+lib;
  const show=(what,n)=>say(`${what} ${mb(n)}${all?` / ${mb(all)}`:''} MB`,all?n/all:undefined);
  show('正在下载物理引擎',0);
  const wasmBinary=await fetchBytes('./vendor/mujoco/mujoco.wasm',n=>{got+=n;show('正在下载物理引擎',got);});
@@ -89,7 +91,7 @@ async function start(){
  const sim=createSim(mj,arenaXml(xml),DT),{model,data}=sim,floor=model.geom('floor').id;
  model.geom_priority[floor]=1;model.geom_friction[floor*3]=.5;
  const {scene,camera,renderer,controls,follow}=createArenaScene(stage);
- const view=createBodyView(scene,sim,meta),arena=createArena(scene);
+ const view=createBodyView(scene,sim,meta),arena=createArena(scene),robot=applyRobot({scene,renderer,view,sim});
  view.meshes.filter(m=>m.userData.body===0).forEach(m=>{m.visible=false;});
  const bodyMeshes=view.meshes.filter(m=>m.userData.body!==0);
  const pickBody=ray=>{const h=ray.intersectObjects(bodyMeshes,false)[0];return h&&{body:h.object.userData.body,point:h.point};};
@@ -97,12 +99,12 @@ async function start(){
  const tether=createTether({tether:$('tether'),label:$('force'),camera,canvas:renderer.domElement});
  function showHint(text,ms=3200){hint.textContent=text;hint.classList.add('is-on');clearTimeout(hintTimer);if(ms)hintTimer=setTimeout(()=>hint.classList.remove('is-on'),ms);}
  // the left rail: pull only; the other hands are locked in this release
- for(const b of document.querySelectorAll('.tools button'))b.addEventListener('click',()=>showHint(b.dataset.mode==='pull'?'按住身体任意部位拖动':LOCKED));
- app.dataset.mode='pull';app.style.setProperty('--mode','#d9707a');
+ for(const b of document.querySelectorAll('.tools button'))b.addEventListener('click',()=>showHint(b.dataset.mode==='pull'?'按住机器人身体任意部位拖动':LOCKED));
+ app.dataset.mode='pull';app.style.setProperty('--mode',ACCENT);
  const canvas=renderer.domElement;let pendingAt=null,estimate=null,lastMetric=0;
  const placeRing=e=>{const b=canvas.getBoundingClientRect();ripple.style.left=`${e.clientX-b.left}px`;ripple.style.top=`${e.clientY-b.top}px`;};
  const pull=createPull({canvas,camera,pick:pickBody,sim,enabled:()=>!!tracker,ui:{
-  press(e){pendingAt=performance.now();placeRing(e);ripple.style.setProperty('--ring','#d9707a');app.classList.add('is-held');hint.classList.remove('is-on');controls.enabled=false;},
+  press(e){pendingAt=performance.now();placeRing(e);ripple.style.setProperty('--ring',ACCENT);app.classList.add('is-held');hint.classList.remove('is-on');controls.enabled=false;},
   move(e){pendingAt=performance.now();placeRing(e);},
   release(){app.classList.remove('is-held');controls.enabled=true;}}});
  function restore(){
@@ -130,11 +132,11 @@ async function start(){
  }
  async function loadController(){
   try{
-   const pack=await withCountedFetch(n=>{got+=n;show('正在下载动作库',got);},()=>loadTracker('./model/tracker/'));
+   const pack=await withCountedFetch(n=>{got+=n;show('正在下载动作库',got);},()=>loadTracker(MODEL));
    phase='启动控制器';tracker=new Tracker(mj,model,data,pack,idle.ctrl);
-   nextControl=data.time;status.hidden=true;reset.disabled=false;app.classList.add('is-ready');$('skill').textContent='ReflexBody Lite';$('splash').classList.add('is-gone');
-   const notice=$('notice');notice.hidden=false;$('noticeOk').focus();$('noticeOk').onclick=()=>{notice.hidden=true;showHint('按住身体任意部位拖动');};
-   showHint('按住身体任意部位拖动');resume();
+   nextControl=data.time;status.hidden=true;reset.disabled=false;app.classList.add('is-ready');$('skill').textContent='ReflexBody · skill11b';$('splash').classList.add('is-gone');
+   const notice=$('notice');notice.hidden=false;$('noticeOk').focus();$('noticeOk').onclick=()=>{notice.hidden=true;showHint('按住机器人身体任意部位拖动');};
+   showHint('按住机器人身体任意部位拖动');resume();
   }catch(error){fail(error);}
  }
  let last=performance.now(),frameHandle=0,simLag=0;
@@ -142,7 +144,7 @@ async function start(){
   frameHandle=0;if(document.hidden)return;
   const dt=Math.min(.04,(now-last)/1000);last=now;
   if(tracker){simLag+=dt;let n=0;while(simLag>=DT&&n<MAX_STEPS){step();simLag-=DT;n++;}if(n===MAX_STEPS)simLag=0;}
-  view.update(dt);arena.update(model,data);
+  view.update(dt);arena.update(model,data);robot.update();
   const g=pull.grab();tether.draw(g&&spring?spring.point:null,[ripple.offsetLeft,ripple.offsetTop],spring?Math.hypot(...spring.force):0);
   if(!pull.grab())follow(data.qpos[0],data.qpos[2],dt);else controls.update();
   renderer.render(scene,camera);

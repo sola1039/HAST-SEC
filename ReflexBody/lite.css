@@ -30,3 +30,23 @@
 #notice b { color: var(--ink); }
 #notice button { width: 100%; margin-top: 8px; padding: 10px 0; border: 0; border-radius: 14px; background: #d9707a; color: #fff; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
 @keyframes rise { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
+
+/* the robot simulation theme: dark glass, cyan accents (overrides showcase.css on the showcase page) */
+#app { color: var(--ink); --ink: #e6eef7; --ink-soft: #9db1c6; --glass: #0f1923c2; --glass-edge: #6fb8ff3a; --rose: #39c5ff; --rose-deep: #1f8fd0; --pain: #ff6b6b; background: #0e1620; }
+#app::before { background: radial-gradient(120% 70% at 50% 55%, transparent 55%, #02060a80 100%); }
+.glass { box-shadow: 0 10px 30px #0009, inset 0 1px #ffffff14; }
+.skill { color: #9db1c6b0; font-family: ui-monospace, Consolas, monospace; }
+.metric + .metric { border-left: 1px solid #ffffff1a; }
+.tools button[aria-pressed="true"] { box-shadow: 0 6px 18px #39c5ff55; }
+@media (hover: hover) { .tools button[aria-pressed="false"]:hover { background: #ffffff14; color: var(--ink); } }
+@media (min-width: 601px) { body { background: radial-gradient(circle at 50% 30%, #1a2a3a, #070b10); } }
+#splash { background: radial-gradient(120% 80% at 50% 35%, #1e3550 0%, #101c29 60%, #0a121b 100%); }
+#splash .bar { background: #ffffff14; }
+#splash .bar i { background: linear-gradient(90deg, #2a8fd6, #39c5ff); }
+#splash .fine { color: #9db1c699; }
+#splash button, #notice button { background: #2a9be0; }
+#notice { background: #02060a80; }
+#notice b { color: #7fd6ff; }
+.mark { background: radial-gradient(circle at 50% 50%, #0b1a24 38%, #39c5ff 40%, #39c5ff 46%, #0b1a24 48%, #16283a 100%); box-shadow: 0 0 28px #39c5ff66, inset 0 0 12px #39c5ff44; }
+#force { background: #0b1520d9; border: 1px solid #39c5ff55; }
+.notice { font-family: inherit; }

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReflexBody Lite 调试页</title>
+<link rel="icon" href="data:,">
+<style>
+ html,body{margin:0;height:100%;background:#faf7f2;font:14px/1.5 system-ui,sans-serif;color:#3a342c}
+ #stage{position:fixed;inset:0}
+ #panel{position:fixed;left:8px;right:8px;top:8px;background:rgba(255,255,255,.88);border-radius:8px;padding:8px 10px}
+ #panel p{margin:2px 0}
+</style>
+<script type="importmap">
+{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/","@mujoco/mujoco":"./vendor/mujoco/mujoco.js"}}
+</script>
+<script type="module" src="./demo.mjs"></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="panel">
+ <p><b>ReflexBody Lite 调试页</b> 物理数字人近景交互(非商业研究版, 仅拉动)</p>
+ <p>由于版权限制, 当前公开版本为 skill07, 控制能力有限; 最新版本为 skill14.</p>
+ <p id="loading">载入中(约 45 MB)...</p>
+ <p id="status"></p>
+ <p>好感 <input id="will" type="range" min="0" max="1" step="0.25" value="1"> 地面 <select id="surface"><option value="0.9">防滑垫</option><option value="0.5" selected>木地板</option><option value="0.35">瓷砖</option></select> <button id="reset">重置</button></p>
+ <p>按住身体任意部位拖动, 松开放手; 空白处拖动转视角. 展台在 <a href="./">首页</a>.</p>
+</div>
+</body>
+</html>

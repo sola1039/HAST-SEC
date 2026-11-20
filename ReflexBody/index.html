@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#efe6dc">
-<title>ReflexBody Lite 展台</title>
+<meta name="theme-color" content="#0e1620">
+<title>ReflexBody · 具身智能交互仿真</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="./showcase.css">
 <link rel="stylesheet" href="./lite.css">
@@ -14,23 +14,23 @@
 </script>
 </head>
 <body>
-<main id="app" aria-label="ReflexBody Lite 展台">
-  <div id="stage" aria-label="拖动数字人"></div>
+<main id="app" aria-label="ReflexBody 具身智能交互仿真">
+  <div id="stage" aria-label="拖动机器人"></div>
   <svg id="tether" aria-hidden="true"><line x1="0" y1="0" x2="0" y2="0"/><circle r="5"/></svg>
   <div id="ripple" aria-hidden="true"></div>
   <span id="force" aria-hidden="true"></span>
   <section id="notice" role="dialog" aria-modal="true" aria-labelledby="noticeTitle" hidden>
     <div class="card glass">
-      <h2 id="noticeTitle">当前为公开版 skill07</h2>
-      <p>由于版权限制, 这里公开的是早期版本 <b>skill07</b>, 控制能力有限, 只支持拉动.</p>
-      <p>最新版本为 <b>skill14</b>, 支持戳、掐、抚摸、转头与反射等交互, 暂不公开.</p>
-      <button type="button" id="noticeOk">知道了, 开始拉她</button>
+      <h2 id="noticeTitle">当前展示: 开源版 skill11b</h2>
+      <p>按住机器人身体任意部位拖动, 它会在物理仿真中自己保持平衡、挪步或顺着拉力. 本页只开放拉动交互.</p>
+      <p>由于版权限制, 最新版本 <b>skill14</b> 暂不公开. 开源提供两个版本: <b>skill11b</b>(本页, 适合跑交互)和 <b>skill07</b>(适合作基线, 允许非商业训练与蒸馏).</p>
+      <button type="button" id="noticeOk">知道了, 开始交互</button>
     </div>
   </section>
   <section id="splash" aria-live="polite">
     <div class="mark" aria-hidden="true"></div>
-    <h1>ReflexBody Lite</h1>
-    <p class="sub">可以拉动的物理数字人</p>
+    <h1>ReflexBody</h1>
+    <p class="sub">具身智能 · 人形机器人物理交互仿真</p>
     <div class="bar" aria-hidden="true"><i></i></div>
     <p class="what" id="splashText">正在准备</p>
     <button type="button" id="retry">重试</button>
@@ -39,7 +39,7 @@
 
   <header class="topbar">
     
-    <p class="notice glass">由于版权限制, 当前公开版本为 skill07, 控制能力有限; 最新版本为 skill14.</p>
+    <p class="notice glass">展台为开源版 skill11b. 由于版权限制, 最新版 skill14 暂不公开; 基线版 skill07 见 skill07 文件夹.</p>
     <div class="side">
       <div class="metrics glass" aria-label="实时运行数据">
         <div class="metric"><span class="metric-label">交互延时</span><strong id="latency">—</strong><span class="metric-unit">ms</span></div>
